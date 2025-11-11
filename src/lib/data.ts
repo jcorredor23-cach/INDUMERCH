@@ -11,12 +11,12 @@ export const initialClients: Client[] = [
 ];
 
 export const initialMaterials: Material[] = [
-  { id: 'ChatarraAcero', name: 'Chatarra de Acero (Carga)', stock: 500, unit: 'ton', min_stock: 100 },
-  { id: 'Manganeso', name: 'Acero al Manganeso (FeMn)', stock: 80, unit: 'kg', min_stock: 10 },
-  { id: 'AltoCromo', name: 'Acero al Alto Cromo (FeCr)', stock: 50, unit: 'kg', min_stock: 5 },
-  { id: 'Inoxidable', name: 'Acero Inoxidable (Chatarra)', stock: 120, unit: 'kg', min_stock: 20 },
-  { id: 'HierroGris', name: 'Arrabio/Hierro Gris', stock: 300, unit: 'ton', min_stock: 50 },
-  { id: 'ArenaMoldeo', name: 'Arena de Moldeo', stock: 12, unit: 'm3', min_stock: 150 }
+  { id: 'ChatarraAcero', name: 'Chatarra de Acero (Carga)', stock: 48, unit: 'ton', min_stock: 10 },
+  { id: 'Manganeso', name: 'Acero al Manganeso (FeMn)', stock: 2500, unit: 'kg', min_stock: 500 },
+  { id: 'AltoCromo', name: 'Acero al Alto Cromo (FeCr)', stock: 1800, unit: 'kg', min_stock: 400 },
+  { id: 'Inoxidable', name: 'Acero Inoxidable (Chatarra)', stock: 3500, unit: 'kg', min_stock: 1000 },
+  { id: 'HierroGris', name: 'Arrabio/Hierro Gris', stock: 35, unit: 'ton', min_stock: 5 },
+  { id: 'ArenaMoldeo', name: 'Arena de Moldeo', stock: 25, unit: 'm3', min_stock: 5 }
 ];
 
 export const products: Product[] = [
