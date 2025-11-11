@@ -1,0 +1,130 @@
+import type { Material, Client, Product, ProductionOrder, Incident } from './types';
+import { getISOWeek } from 'date-fns';
+
+const CURRENT_WEEK = getISOWeek(new Date());
+
+export const initialClients: Client[] = [
+  { id: 'C-001-MIN', name: 'Minería y Canteras (Agregados)', contact: 'Juan Pérez' },
+  { id: 'C-002-SID', name: 'Siderúrgica Nacional', contact: 'Maria López' },
+  { id: 'C-003-CON', name: 'Construcción e Infraestructura', contact: 'Carlos Gómez' },
+  { id: 'C-004-OTR', name: 'Otras Industrias (Ladrilleras/Asfalto)', contact: 'Sofía Reyes' }
+];
+
+export const initialMaterials: Material[] = [
+  { id: 'ChatarraAcero', name: 'Chatarra de Acero (Carga)', stock: 500, unit: 'ton', min_stock: 100 },
+  { id: 'Manganeso', name: 'Acero al Manganeso (FeMn)', stock: 80, unit: 'kg', min_stock: 10 },
+  { id: 'AltoCromo', name: 'Acero al Alto Cromo (FeCr)', stock: 50, unit: 'kg', min_stock: 5 },
+  { id: 'Inoxidable', name: 'Acero Inoxidable (Chatarra)', stock: 120, unit: 'kg', min_stock: 20 },
+  { id: 'HierroGris', name: 'Arrabio/Hierro Gris', stock: 300, unit: 'ton', min_stock: 50 },
+  { id: 'ArenaMoldeo', name: 'Arena de Moldeo', stock: 12, unit: 'm3', min_stock: 150 }
+];
+
+export const products: Product[] = [
+    { group: 'Minería y Agregados', name: 'Martillo (Minería)' },
+    { group: 'Minería y Agregados', name: 'Mandíbula (Minería)' },
+    { group: 'Minería y Agregados', name: 'Cono (Minería)' },
+    { group: 'Minería y Agregados', name: 'Blindaje (Minería)' },
+    { group: 'Minería y Agregados', name: 'Rotor (Minería)' },
+    { group: 'Minería y Agregados', name: 'Barra de Choque (Minería)' },
+    { group: 'Minería y Agregados', name: 'Zaranda (Minería)' },
+    { group: 'Siderúrgica', name: 'Retenedor (Siderúrgica)' },
+    { group: 'Siderúrgica', name: 'Rueda Puente Grúa (Siderúrgica)' },
+    { group: 'Siderúrgica', name: 'Barra para Parrilla (Siderúrgica)' },
+    { group: 'Construcción y Otros', name: 'Brazo Mezclador (Construcción)' },
+    { group: 'Construcción y Otros', name: 'Paleta (Construcción)' },
+    { group: 'Construcción y Otros', name: 'Impulsor Bomba (Construcción)' },
+    { group: 'Construcción y Otros', name: 'Caracol de Extrusión (Ladrillera)' },
+    { group: 'Servicios', name: 'Mecanizado de Pieza' },
+    { group: 'Servicios', name: 'Corte por Plasma' },
+];
+
+export const initialProductionOrders: ProductionOrder[] = [
+  {
+    id: 'doc_1',
+    op_id: 'COLADA-001',
+    status: 'Terminada',
+    product: 'Mandíbula (Minería)',
+    qty: 50,
+    mp_target_id: 'ChatarraAcero',
+    mp_consumption: 10,
+    targetWeek: CURRENT_WEEK - 1,
+    client_id: 'C-001-MIN',
+    priority: 'Media',
+    job_type: 'Normal Production',
+    start_time_est: new Date(new Date().setDate(new Date().getDate() - 7)).getTime(),
+    end_time_est: new Date(new Date().setDate(new Date().getDate() - 7)).getTime() + 4 * 60 * 60 * 1000,
+    start_time_real: new Date(new Date().setDate(new Date().getDate() - 7)).getTime() + 15 * 60 * 1000,
+    end_time_real: new Date(new Date().setDate(new Date().getDate() - 7)).getTime() + 4 * 60 * 60 * 1000 + 30 * 60 * 1000,
+    createdAt: new Date(new Date().setDate(new Date().getDate() - 8)).getTime(),
+    completionWeek: CURRENT_WEEK - 1,
+  },
+  {
+    id: 'doc_2',
+    op_id: 'COLADA-002',
+    status: 'En Proceso',
+    product: 'Martillo (Minería)',
+    qty: 100,
+    mp_target_id: 'AltoCromo',
+    mp_consumption: 5,
+    targetWeek: CURRENT_WEEK,
+    client_id: 'C-002-SID',
+    priority: 'Alta',
+    job_type: 'Normal Production',
+    start_time_est: new Date(new Date().setDate(new Date().getDate() - 1)).getTime(),
+    end_time_est: new Date().getTime() + 2 * 60 * 60 * 1000,
+    start_time_real: new Date(new Date().setDate(new Date().getDate() - 1)).getTime() + 5 * 60 * 1000,
+    createdAt: new Date(new Date().setDate(new Date().getDate() - 2)).getTime(),
+    startWeek: CURRENT_WEEK,
+  },
+  {
+    id: 'doc_3',
+    op_id: 'COLADA-003',
+    status: 'Pendiente',
+    product: 'Brazo Mezclador (Construcción)',
+    qty: 20,
+    mp_target_id: 'HierroGris',
+    mp_consumption: 2,
+    targetWeek: CURRENT_WEEK,
+    client_id: 'C-003-CON',
+    priority: 'Media',
+    job_type: 'Normal Production',
+    start_time_est: new Date().getTime() + 1 * 60 * 60 * 1000,
+    end_time_est: new Date().getTime() + 5 * 60 * 60 * 1000,
+    createdAt: new Date(new Date().setDate(new Date().getDate() - 1)).getTime(),
+  },
+  {
+    id: 'doc_4',
+    op_id: 'COLADA-004',
+    status: 'Crítico',
+    product: 'Rueda Puente Grúa (Siderúrgica)',
+    qty: 4,
+    mp_target_id: 'Manganeso',
+    mp_consumption: 15,
+    targetWeek: CURRENT_WEEK,
+    client_id: 'C-002-SID',
+    priority: 'Alta',
+    job_type: 'Express/Small Job',
+    start_time_est: new Date(new Date().setDate(new Date().getDate() - 2)).getTime(),
+    end_time_est: new Date(new Date().setDate(new Date().getDate() - 1)).getTime(),
+    start_time_real: new Date(new Date().setDate(new Date().getDate() - 2)).getTime(),
+    createdAt: new Date(new Date().setDate(new Date().getDate() - 3)).getTime(),
+    startWeek: CURRENT_WEEK,
+  },
+];
+
+export const initialIncidents: Incident[] = [
+    {
+        id: 'inc_1',
+        type: 'Falla Equipo',
+        description: 'Horno de inducción principal sobrecalentado. Se detuvo la operación por 2 horas.',
+        op_id: 'COLADA-004',
+        timestamp: new Date(new Date().setDate(new Date().getDate() - 1)).getTime()
+    },
+    {
+        id: 'inc_2',
+        type: 'Calidad',
+        description: 'Muestra de la primera colada del día arrojó composición fuera de especificaciones. Se requiere ajuste de aleación.',
+        op_id: 'COLADA-002',
+        timestamp: new Date(new Date().setDate(new Date().getDate() - 1)).getTime() + 2 * 60 * 60 * 1000
+    }
+];

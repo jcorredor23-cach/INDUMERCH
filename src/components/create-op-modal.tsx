@@ -1,0 +1,192 @@
+"use client";
+
+import { useState } from 'react';
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { FilePlus, Plus } from "lucide-react";
+import type { Client, Material, Product, ProductionOrder } from '@/lib/types';
+import { getCurrentISOWeek, getCurrentDateTimeLocal } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast';
+
+interface CreateOpModalProps {
+  clients: Client[];
+  materials: Material[];
+  products: Product[];
+  onAddOrder: (order: Omit<ProductionOrder, 'id' | 'op_id' | 'createdAt' | 'status'>) => void;
+}
+
+export function CreateOpModal({ clients, materials, products, onAddOrder }: CreateOpModalProps) {
+  const [open, setOpen] = useState(false);
+  const { toast } = useToast();
+
+  const defaultStartTime = getCurrentDateTimeLocal();
+  const defaultEndTime = new Date(Date.now() + 3 * 60 * 60 * 1000);
+  defaultEndTime.setMinutes(defaultEndTime.getMinutes() - defaultEndTime.getTimezoneOffset());
+
+  const [clientId, setClientId] = useState('');
+  const [priority, setPriority] = useState<'Baja' | 'Media' | 'Alta'>('Media');
+  const [productName, setProductName] = useState('');
+  const [jobType, setJobType] = useState<'Normal Production' | 'Express/Small Job'>('Normal Production');
+  const [targetWeek, setTargetWeek] = useState(String(getCurrentISOWeek()));
+  const [targetMPId, setTargetMPId] = useState(materials[0]?.id || '');
+  const [consumption, setConsumption] = useState('50');
+  const [estStartTime, setEstStartTime] = useState(defaultStartTime);
+  const [estEndTime, setEstEndTime] = useState(defaultEndTime.toISOString().slice(0, 16));
+
+  const resetForm = () => {
+    setClientId('');
+    setPriority('Media');
+    setProductName('');
+    setJobType('Normal Production');
+    setTargetWeek(String(getCurrentISOWeek()));
+    setTargetMPId(materials[0]?.id || '');
+    setConsumption('50');
+    setEstStartTime(getCurrentDateTimeLocal());
+    const newEndTime = new Date(Date.now() + 3 * 60 * 60 * 1000);
+    newEndTime.setMinutes(newEndTime.getMinutes() - newEndTime.getTimezoneOffset());
+    setEstEndTime(newEndTime.toISOString().slice(0, 16));
+  };
+  
+  const handleSubmit = () => {
+    if (!clientId || !productName || !targetMPId || !consumption) {
+      toast({ title: "Campos incompletos", description: "Por favor, complete todos los campos obligatorios.", variant: "destructive" });
+      return;
+    }
+    const consumptionNum = parseInt(consumption, 10);
+    if (isNaN(consumptionNum) || consumptionNum <= 0) {
+      toast({ title: "Consumo inválido", description: "La cantidad de consumo debe ser un número positivo.", variant: "destructive" });
+      return;
+    }
+     const startTimeMs = new Date(estStartTime).getTime();
+    const endTimeMs = new Date(estEndTime).getTime();
+    if (startTimeMs >= endTimeMs) {
+      toast({ title: "Fechas inválidas", description: "La hora de fin debe ser posterior a la de inicio.", variant: "destructive" });
+      return;
+    }
+
+    onAddOrder({
+      client_id: clientId,
+      priority,
+      product: productName,
+      job_type: jobType,
+      targetWeek: parseInt(targetWeek),
+      mp_target_id: targetMPId,
+      mp_consumption: consumptionNum,
+      start_time_est: startTimeMs,
+      end_time_est: endTimeMs,
+      qty: parseInt(consumption) // Simplified for now
+    });
+    
+    setOpen(false);
+    resetForm();
+  };
+
+  const productGroups = products.reduce((acc, product) => {
+    (acc[product.group] = acc[product.group] || []).push(product);
+    return acc;
+  }, {} as Record<string, Product[]>);
+
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button className="bg-indigo-600 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow-md hover:bg-indigo-700 transition duration-200 flex items-center">
+            <Plus className="w-4 h-4 mr-1" /> Nueva Colada
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-lg bg-white">
+        <DialogHeader>
+          <DialogTitle className="text-xl font-bold text-indigo-700 flex items-center">
+            <FilePlus className="w-5 h-5 mr-2" />
+            Crear Nueva Orden de Colada
+          </DialogTitle>
+        </DialogHeader>
+        <div className="grid gap-4 py-4 max-h-[70vh] overflow-y-auto pr-2">
+            <div className="grid grid-cols-2 gap-4">
+                <div>
+                    <Label htmlFor="op-client-select">Cliente / Empresa</Label>
+                    <Select value={clientId} onValueChange={setClientId}>
+                        <SelectTrigger id="op-client-select"><SelectValue placeholder="-- Seleccione un Cliente --" /></SelectTrigger>
+                        <SelectContent>
+                            {clients.map(client => <SelectItem key={client.id} value={client.id}>{client.name}</SelectItem>)}
+                        </SelectContent>
+                    </Select>
+                </div>
+                <div>
+                    <Label htmlFor="op-priority-select">Prioridad</Label>
+                    <Select value={priority} onValueChange={(v) => setPriority(v as any)}>
+                        <SelectTrigger id="op-priority-select"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="Baja">Baja</SelectItem>
+                            <SelectItem value="Media">Media</SelectItem>
+                            <SelectItem value="Alta">Alta</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+            </div>
+            <div>
+                <Label htmlFor="op-product-select">Producto a Fundir</Label>
+                <Select value={productName} onValueChange={setProductName}>
+                    <SelectTrigger id="op-product-select"><SelectValue placeholder="-- Seleccione un producto --" /></SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(productGroups).map(([group, products]) => (
+                        <SelectGroup key={group}>
+                          <Label className="px-2 py-1.5 text-sm font-semibold">{group}</Label>
+                          {products.map(p => <SelectItem key={p.name} value={p.name}>{p.name}</SelectItem>)}
+                        </SelectGroup>
+                      ))}
+                    </SelectContent>
+                </Select>
+            </div>
+             <div>
+                <Label htmlFor="op-job-type-select">Tipo de Producción</Label>
+                <Select value={jobType} onValueChange={(v) => setJobType(v as any)}>
+                    <SelectTrigger id="op-job-type-select"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="Normal Production">Colada Grande / Producción Normal</SelectItem>
+                        <SelectItem value="Express/Small Job">Trabajo Express / Pequeño (Interferencia)</SelectItem>
+                    </SelectContent>
+                </Select>
+                <p className="text-xs text-red-500 mt-1">Marcar "Express" genera alerta visual.</p>
+            </div>
+            <div className="grid grid-cols-3 gap-4">
+                <div>
+                    <Label htmlFor="op-target-week">Semana Objetivo</Label>
+                    <Input id="op-target-week" type="number" value={targetWeek} onChange={e => setTargetWeek(e.target.value)} min="1" max="53" />
+                </div>
+                <div className="col-span-2">
+                    <Label>Materia Prima a Consumir</Label>
+                    <div className="flex space-x-2">
+                         <Select value={targetMPId} onValueChange={setTargetMPId}>
+                            <SelectTrigger className="w-1/2"><SelectValue /></SelectTrigger>
+                            <SelectContent>
+                                {materials.map(mp => <SelectItem key={mp.id} value={mp.id}>{mp.name} ({mp.unit})</SelectItem>)}
+                            </SelectContent>
+                        </Select>
+                        <Input type="number" value={consumption} onChange={e => setConsumption(e.target.value)} min="1" placeholder="Cantidad" className="w-1/2" />
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <h4 className="text-base font-semibold text-gray-700">Estimación de Tiempos</h4>
+            <div className="grid grid-cols-2 gap-4">
+                <div>
+                    <Label htmlFor="op-est-start-time">Inicio Estimado</Label>
+                    <Input id="op-est-start-time" type="datetime-local" value={estStartTime} onChange={e => setEstStartTime(e.target.value)} />
+                </div>
+                <div>
+                    <Label htmlFor="op-est-end-time">Fin Estimado</Label>
+                    <Input id="op-est-end-time" type="datetime-local" value={estEndTime} onChange={e => setEstEndTime(e.target.value)} />
+                </div>
+            </div>
+        </div>
+        <DialogFooter>
+          <Button onClick={handleSubmit} className="w-full bg-indigo-600 hover:bg-indigo-700">Crear Colada (Pendiente)</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
