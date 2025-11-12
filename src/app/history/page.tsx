@@ -25,7 +25,6 @@ import { MainLayout } from '@/components/main-layout';
 export default function HistoryPage() {
   const [orders] = useState<ProductionOrder[]>(initialProductionOrders);
   const [clients] = useState<Client[]>(initialClients);
-  const [materials] = useState<Material[]>(initialMaterials);
 
   const finishedOrders = useMemo(() => orders.filter(o => o.status === 'Terminada'), [orders]);
 
@@ -35,14 +34,6 @@ export default function HistoryPage() {
       return acc;
     }, {} as Record<string, string>);
   }, [clients]);
-
-  const materialsMap = useMemo(() => {
-    return materials.reduce((acc, material) => {
-      acc[material.id] = material;
-      return acc;
-    }, {} as Record<string, Material>);
-  }, [materials]);
-
 
   return (
     <MainLayout>

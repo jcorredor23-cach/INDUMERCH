@@ -12,6 +12,7 @@ import { MainLayout } from '@/components/main-layout';
 import { ProductionOrdersSection } from '@/components/production-orders-section';
 import { IncidentsSection } from '@/components/incidents-section';
 import { ProductionChart } from '@/components/production-chart';
+import { MaterialsSection } from '@/components/materials-section';
 
 export default function SteelFlowDashboard() {
 
