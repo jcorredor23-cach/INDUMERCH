@@ -1,8 +1,9 @@
+
 'use client';
 
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import { Home, History, User, LogOut, Package } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import { Home, History, Package } from 'lucide-react';
 import {
   SidebarProvider,
   Sidebar,
@@ -16,18 +17,9 @@ import {
   SidebarInset,
 } from '@/components/ui/sidebar';
 import { Logo } from './logo';
-import { useAuth } from '@/firebase';
-import { Button } from './ui/button';
 
 export function MainLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const auth = useAuth();
-  const router = useRouter();
-
-  const handleSignOut = async () => {
-    await auth.signOut();
-    router.push('/auth');
-  };
 
   return (
     <SidebarProvider>
@@ -79,18 +71,6 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
           </SidebarMenu>
         </SidebarContent>
         <SidebarFooter>
-          {auth.currentUser && (
-            <div className="flex flex-col gap-2 p-2 text-sm">
-                <div className="flex items-center gap-2 p-2 rounded-md bg-sidebar-accent">
-                    <User className="h-5 w-5 text-sidebar-foreground/70" />
-                    <span className="truncate text-sidebar-foreground/90">{auth.currentUser.email}</span>
-                </div>
-                <Button variant="ghost" onClick={handleSignOut} className="justify-start gap-2 text-sidebar-foreground/70 hover:text-sidebar-foreground">
-                    <LogOut />
-                    <span>Cerrar Sesión</span>
-                </Button>
-            </div>
-          )}
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>

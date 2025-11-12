@@ -1,8 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
-import { FirebaseClientProvider } from '@/firebase/client-provider';
-import { MainLayout } from '@/components/main-layout';
 
 export const metadata: Metadata = {
   title: 'SteelFlow - InduControl Fundición',
@@ -25,9 +23,7 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/icon-192x192.png"></link>
       </head>
       <body className="font-body antialiased bg-background">
-        <FirebaseClientProvider>
-          {children}
-        </FirebaseClientProvider>
+        {children}
         <Toaster />
       </body>
     </html>

@@ -1,26 +1,19 @@
 
 "use client";
 
-import { useState, useMemo, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useState, useMemo } from 'react';
 import { getISOWeek } from 'date-fns';
 
-import type { Material, ProductionOrder, Incident, Client, Product, MaterialConsumption } from '@/lib/types';
+import type { Material, ProductionOrder, Incident, Client, Product } from '@/lib/types';
 import { initialMaterials, initialClients, initialProductionOrders, initialIncidents, products as allProducts } from '@/lib/data';
 import { useToast } from "@/hooks/use-toast";
-import { useUser } from '@/firebase';
 import { MainLayout } from '@/components/main-layout';
 
 import { ProductionOrdersSection } from '@/components/production-orders-section';
 import { IncidentsSection } from '@/components/incidents-section';
-import { User, History } from 'lucide-react';
 import { ProductionChart } from '@/components/production-chart';
-import { Button } from '@/components/ui/button';
 
 export default function SteelFlowDashboard() {
-  const { user, isUserLoading } = useUser();
-  const router = useRouter();
 
   const [materials, setMaterials] = useState<Material[]>(initialMaterials);
   const [clients] = useState<Client[]>(initialClients);
@@ -32,11 +25,6 @@ export default function SteelFlowDashboard() {
 
   const { toast } = useToast();
 
-  useEffect(() => {
-    if (!isUserLoading && !user) {
-      router.push('/auth');
-    }
-  }, [user, isUserLoading, router]);
 
   const clientsMap = useMemo(() => {
     return clients.reduce((acc, client) => {
@@ -184,10 +172,6 @@ export default function SteelFlowDashboard() {
     setIncidents(prevIncidents => [newIncident, ...prevIncidents]);
     toast({ title: "Novedad Registrada", description: `Se ha registrado una nueva novedad de tipo: ${newIncident.type}.` });
   };
-
-  if (isUserLoading || !user) {
-    return <div className="flex items-center justify-center min-h-screen">Cargando...</div>;
-  }
 
   return (
     <MainLayout>
