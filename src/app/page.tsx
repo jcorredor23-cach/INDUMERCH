@@ -1,6 +1,8 @@
+
 "use client";
 
 import { useState, useMemo } from 'react';
+import Link from 'next/link';
 import { getISOWeek } from 'date-fns';
 
 import type { Material, ProductionOrder, Incident, Client, Product, MaterialConsumption } from '@/lib/types';
@@ -11,8 +13,9 @@ import { Header } from '@/components/header';
 import { MaterialsSection } from '@/components/materials-section';
 import { ProductionOrdersSection } from '@/components/production-orders-section';
 import { IncidentsSection } from '@/components/incidents-section';
-import { User } from 'lucide-react';
+import { User, History } from 'lucide-react';
 import { ProductionChart } from '@/components/production-chart';
+import { Button } from '@/components/ui/button';
 
 export default function SteelFlowDashboard() {
   const [materials, setMaterials] = useState<Material[]>(initialMaterials);
@@ -38,6 +41,8 @@ export default function SteelFlowDashboard() {
       return acc;
     }, {} as Record<string, Material>);
   }, [materials]);
+
+  const activeOrders = useMemo(() => orders.filter(o => o.status !== 'Terminada'), [orders]);
 
   const handleCreateOrder = (newOrderData: Omit<ProductionOrder, 'id' | 'op_id' | 'createdAt' | 'status'>) => {
     const newOPNumber = lastOPNumber + 1;
@@ -181,10 +186,18 @@ export default function SteelFlowDashboard() {
         </div>
       </div>
       <main className="max-w-screen-2xl mx-auto p-4 lg:p-8">
+        <div className="flex justify-end mb-4">
+          <Button asChild variant="outline">
+            <Link href="/history">
+              <History className="w-4 h-4 mr-2" />
+              Ver Historial
+            </Link>
+          </Button>
+        </div>
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 items-start">
           <MaterialsSection materials={materials} />
           <ProductionOrdersSection
-            orders={orders}
+            orders={activeOrders}
             clients={clients}
             materials={materials}
             products={allProducts}

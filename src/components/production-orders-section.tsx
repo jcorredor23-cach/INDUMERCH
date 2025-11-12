@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useMemo } from 'react';
@@ -42,7 +43,9 @@ export function ProductionOrdersSection({ orders, clients, materials, products, 
 
   const ordersByStatus = useMemo(() => {
     return orders.reduce((acc, order) => {
-      (acc[order.status] = acc[order.status] || []).push(order);
+      if (order.status !== 'Terminada') {
+        (acc[order.status] = acc[order.status] || []).push(order);
+      }
       return acc;
     }, {} as Record<ProductionOrderStatus, ProductionOrder[]>);
   }, [orders]);
@@ -89,9 +92,9 @@ export function ProductionOrdersSection({ orders, clients, materials, products, 
           <TabsContent value="list">
              <div className="space-y-4 max-h-[600px] overflow-y-auto p-1">
               {orders.length === 0 ? (
-                <p className="text-center text-gray-400 py-6">Cargando órdenes...</p>
+                <p className="text-center text-gray-400 py-6">No hay órdenes activas.</p>
               ) : (
-                orders.map(order => (
+                orders.filter(o => o.status !== 'Terminada').map(order => (
                   <OpListItem
                     key={order.id}
                     order={order}
@@ -106,7 +109,7 @@ export function ProductionOrdersSection({ orders, clients, materials, products, 
           </TabsContent>
 
           <TabsContent value="kanban">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <KanbanColumn title="Pendiente" icon={<PauseCircle className="w-4 h-4 mr-2"/>} colorClass="text-yellow-600 border-yellow-400">
                     {renderKanbanCards('Pendiente')}
                 </KanbanColumn>
@@ -115,9 +118,6 @@ export function ProductionOrdersSection({ orders, clients, materials, products, 
                 </KanbanColumn>
                 <KanbanColumn title="Crítico" icon={<AlertCircle className="w-4 h-4 mr-2"/>} colorClass="text-red-600 border-red-400">
                     {renderKanbanCards('Crítico')}
-                </KanbanColumn>
-                <KanbanColumn title="Terminada" icon={<CheckCircle className="w-4 h-4 mr-2"/>} colorClass="text-gray-600 border-gray-400">
-                    {renderKanbanCards('Terminada')}
                 </KanbanColumn>
             </div>
           </TabsContent>
