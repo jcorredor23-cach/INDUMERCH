@@ -12,6 +12,7 @@ import { MaterialsSection } from '@/components/materials-section';
 import { ProductionOrdersSection } from '@/components/production-orders-section';
 import { IncidentsSection } from '@/components/incidents-section';
 import { User } from 'lucide-react';
+import { ProductionChart } from '@/components/production-chart';
 
 export default function SteelFlowDashboard() {
   const [materials, setMaterials] = useState<Material[]>(initialMaterials);
@@ -139,7 +140,7 @@ export default function SteelFlowDashboard() {
     setOrders(prevOrders => prevOrders.map(order => 
         order.id === orderId ? { ...order, status: 'Crítico' } : order
     ));
-    toast({ title: "Orden Crítica", description: `${orderToMark.op_id} marcada como crítica. Requiere atención.`, variant: "default" });
+    toast({ title: "Orden Crítica", description: `${orderToMark.op_id} marcada como crítica.`, variant: "default" });
   };
 
   const handleDeleteOrder = (orderId: string) => {
@@ -177,29 +178,26 @@ export default function SteelFlowDashboard() {
       </div>
       <main className="max-w-screen-2xl mx-auto p-4 lg:p-8">
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 items-start">
-          <div className="xl:col-span-1 space-y-8">
-            <MaterialsSection materials={materials} />
-          </div>
-          <div className="xl:col-span-2 space-y-8">
-            <ProductionOrdersSection
-              orders={orders}
-              clients={clients}
-              materials={materials}
-              products={allProducts}
-              onAddOrder={handleCreateOrder}
-              onStartOrder={handleStartOrder}
-              onCompleteOrder={handleCompleteOrder}
-              onMarkCritical={handleMarkCritical}
-              onDeleteOrder={handleDeleteOrder}
-            />
-          </div>
-          <div className="xl:col-span-3 grid grid-cols-1">
+          <MaterialsSection materials={materials} />
+          <ProductionOrdersSection
+            orders={orders}
+            clients={clients}
+            materials={materials}
+            products={allProducts}
+            onAddOrder={handleCreateOrder}
+            onStartOrder={handleStartOrder}
+            onCompleteOrder={handleCompleteOrder}
+            onMarkCritical={handleMarkCritical}
+            onDeleteOrder={handleDeleteOrder}
+          />
+          <div className="xl:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-8">
              <IncidentsSection 
                 incidents={incidents} 
                 orders={orders}
                 clients={clientsMap}
                 onAddIncident={handleCreateIncident}
               />
+              <ProductionChart orders={orders} />
           </div>
         </div>
       </main>

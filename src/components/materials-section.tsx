@@ -7,7 +7,7 @@ interface MaterialsSectionProps {
 
 export function MaterialsSection({ materials }: MaterialsSectionProps) {
   return (
-    <section className="bg-white p-6 rounded-xl shadow-2xl h-fit">
+    <section className="bg-white p-6 rounded-xl shadow-2xl h-fit xl:col-span-1">
       <h2 className="text-xl font-bold text-slate-700 border-b pb-3 mb-4 flex items-center font-headline">
         <Package className="w-5 h-5 mr-2 text-slate-500" />
         Inventario de Materia Prima

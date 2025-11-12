@@ -107,7 +107,7 @@ export function IncidentsSection({ incidents, orders, clients, onAddIncident }: 
         <span className="flex items-center"><AlertTriangle className="w-5 h-5 mr-2 text-slate-500" />Registro de Novedades</span>
         <LogIncidentModal orders={orders} clients={clients} onAddIncident={onAddIncident} />
       </h2>
-      <div className="space-y-3 max-h-[600px] overflow-y-auto p-1">
+      <div className="space-y-3 max-h-[400px] overflow-y-auto p-1">
         {incidents.length === 0 ? (
           <p className="text-center text-gray-500 py-6">Sin novedades registradas.</p>
         ) : (

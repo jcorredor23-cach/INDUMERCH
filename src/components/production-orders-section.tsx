@@ -69,7 +69,7 @@ export function ProductionOrdersSection({ orders, clients, materials, products, 
   }
 
   return (
-    <Card className="shadow-2xl rounded-xl">
+    <Card className="shadow-2xl rounded-xl col-span-1 xl:col-span-2">
       <CardHeader className="border-b">
         <div className="flex justify-between items-center">
             <CardTitle className="text-xl font-bold text-slate-700 flex items-center font-headline">
