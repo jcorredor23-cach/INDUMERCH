@@ -1,0 +1,301 @@
+{
+  "entities": {
+    "RawMaterial": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "RawMaterial",
+      "type": "object",
+      "description": "Represents a raw material used in the steel foundry, including its stock level and minimum stock threshold.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the raw material."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the raw material (e.g., ChatarraAcero, ArenaMoldeo)."
+        },
+        "stock": {
+          "type": "number",
+          "description": "Current stock level of the raw material."
+        },
+        "unit": {
+          "type": "string",
+          "description": "Unit of measurement for the raw material (e.g., ton, kg, m3)."
+        },
+        "min_stock": {
+          "type": "number",
+          "description": "Minimum stock level that should be maintained for the raw material."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "stock",
+        "unit",
+        "min_stock"
+      ]
+    },
+    "Client": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Client",
+      "type": "object",
+      "description": "Represents a client of the steel foundry.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the client."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the client."
+        },
+        "contact": {
+          "type": "string",
+          "description": "Contact person for the client."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "contact"
+      ]
+    },
+    "ProductionOrder": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "ProductionOrder",
+      "type": "object",
+      "description": "Represents a production order (colada) in the steel foundry.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the production order."
+        },
+        "op_id": {
+          "type": "string",
+          "description": "Production order identifier (e.g., COLADA-001)."
+        },
+        "status": {
+          "type": "string",
+          "description": "Current status of the production order (e.g., Pendiente, En Proceso, Terminada)."
+        },
+        "product": {
+          "type": "string",
+          "description": "Product being manufactured in the production order."
+        },
+        "qty": {
+          "type": "number",
+          "description": "Quantity of the product to be manufactured."
+        },
+        "mp_target_id": {
+          "type": "string",
+          "description": "Reference to RawMaterial. (Relationship: RawMaterial 1:N ProductionOrder). Identifier of the raw material targeted for consumption."
+        },
+        "mp_consumption": {
+          "type": "number",
+          "description": "Amount of raw material consumed in the production order."
+        },
+        "targetWeek": {
+          "type": "number",
+          "description": "Target week for the production order (ISO week number)."
+        },
+        "client_id": {
+          "type": "string",
+          "description": "Reference to Client. (Relationship: Client 1:N ProductionOrder). Identifier of the client associated with the production order."
+        },
+        "priority": {
+          "type": "string",
+          "description": "Priority of the production order (e.g., Baja, Media, Alta)."
+        },
+        "job_type": {
+          "type": "string",
+          "description": "Type of job for the production order (e.g., Normal Production, Express/Small Job)."
+        },
+        "start_time_est": {
+          "type": "number",
+          "description": "Estimated start time of the production order (timestamp)."
+        },
+        "end_time_est": {
+          "type": "number",
+          "description": "Estimated end time of the production order (timestamp)."
+        },
+        "createdAt": {
+          "type": "number",
+          "description": "Timestamp when the production order was created."
+        },
+        "start_time_real": {
+          "type": "number",
+          "description": "Actual start time of the production order (timestamp)."
+        },
+        "end_time_real": {
+          "type": "number",
+          "description": "Actual end time of the production order (timestamp)."
+        },
+        "startWeek": {
+          "type": "number",
+          "description": "Week the OP was started."
+        },
+        "completionWeek": {
+          "type": "number",
+          "description": "Week the OP was completed."
+        }
+      },
+      "required": [
+        "id",
+        "op_id",
+        "status",
+        "product",
+        "qty",
+        "mp_target_id",
+        "mp_consumption",
+        "targetWeek",
+        "client_id",
+        "priority",
+        "job_type",
+        "start_time_est",
+        "end_time_est",
+        "createdAt"
+      ]
+    },
+    "Incident": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Incident",
+      "type": "object",
+      "description": "Represents an incident or exception that occurred during production.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the incident."
+        },
+        "type": {
+          "type": "string",
+          "description": "Type of incident (e.g., Falla Equipo, Error Humano)."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the incident."
+        },
+        "op_id": {
+          "type": "string",
+          "description": "Reference to ProductionOrder. (Relationship: ProductionOrder 1:N Incident). Identifier of the production order associated with the incident (optional)."
+        },
+        "timestamp": {
+          "type": "number",
+          "description": "Timestamp when the incident occurred."
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "description",
+        "timestamp"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "artifacts/{appId}/users/{userId}/materia_prima_fundicion/{rawMaterialId}",
+        "definition": {
+          "entityName": "RawMaterial",
+          "schema": {
+            "$ref": "#/backend/entities/RawMaterial"
+          },
+          "description": "Stores raw material data for the steel foundry. Path-based ownership.",
+          "params": [
+            {
+              "name": "appId",
+              "description": "The unique identifier of the application instance."
+            },
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user."
+            },
+            {
+              "name": "rawMaterialId",
+              "description": "The unique identifier for the raw material."
+            }
+          ]
+        }
+      },
+      {
+        "path": "artifacts/{appId}/users/{userId}/clients/{clientId}",
+        "definition": {
+          "entityName": "Client",
+          "schema": {
+            "$ref": "#/backend/entities/Client"
+          },
+          "description": "Stores client data for the steel foundry. Path-based ownership.",
+          "params": [
+            {
+              "name": "appId",
+              "description": "The unique identifier of the application instance."
+            },
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user."
+            },
+            {
+              "name": "clientId",
+              "description": "The unique identifier for the client."
+            }
+          ]
+        }
+      },
+      {
+        "path": "artifacts/{appId}/users/{userId}/ordenes_produccion_fundicion/{productionOrderId}",
+        "definition": {
+          "entityName": "ProductionOrder",
+          "schema": {
+            "$ref": "#/backend/entities/ProductionOrder"
+          },
+          "description": "Stores production order data for the steel foundry. Path-based ownership.",
+          "params": [
+            {
+              "name": "appId",
+              "description": "The unique identifier of the application instance."
+            },
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user."
+            },
+            {
+              "name": "productionOrderId",
+              "description": "The unique identifier for the production order."
+            }
+          ]
+        }
+      },
+      {
+        "path": "artifacts/{appId}/users/{userId}/incidents/{incidentId}",
+        "definition": {
+          "entityName": "Incident",
+          "schema": {
+            "$ref": "#/backend/entities/Incident"
+          },
+          "description": "Stores incident data for the steel foundry. Path-based ownership.",
+          "params": [
+            {
+              "name": "appId",
+              "description": "The unique identifier of the application instance."
+            },
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user."
+            },
+            {
+              "name": "incidentId",
+              "description": "The unique identifier for the incident."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed to manage raw materials, clients, production orders, and incidents for a steel foundry. The structure emphasizes authorization independence, clarity, and security.  Each user owns their set of data within an `artifacts/{appId}/users/{userId}` path, ensuring data segregation. \n\n**Authorization Independence:**\n\n*   Authorization is managed through path-based ownership (`/users/{userId}`). Each user has their own collections for materials, clients, production orders, and incidents. This eliminates the need for `get()` calls in security rules to validate ownership, which supports atomic operations and simplifies debugging.\n\n**Structural Segregation:**\n\n*   All documents within a collection share the same security requirements. For example, all production orders in `/artifacts/{appId}/users/{userId}/production_orders` are owned by the user identified by `{userId}`.\n\n**QAPs (Rules are not Filters):**\n\n*   List operations are secured using path-based rules. Since each user's data is stored under their own `userId`, rules can easily enforce that a user can only list documents within their own path.\n\n**Data Clarity and Predictability:**\n\n*   Explicit state modeling is used with the `status` field in the `ProductionOrder` entity, ensuring a clear and easily understandable state for each order.\n\n**Denormalization:**\n\n*   There's no explicit denormalization mentioned because the structure is already designed to avoid hierarchical dependencies. If there were subcollections to `ProductionOrder` that required access control based on the `ProductionOrder`'s data, the relevant fields would be denormalized into those subcollection documents.\n"
+  }
+}
