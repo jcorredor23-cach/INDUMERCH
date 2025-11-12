@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/table';
 import { formatDateTime } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
+import { MainLayout } from '@/components/main-layout';
 
 
 export default function HistoryPage() {
@@ -44,17 +45,10 @@ export default function HistoryPage() {
 
 
   return (
-    <div className="bg-background min-h-screen">
-      <Header />
+    <MainLayout>
       <main className="max-w-screen-xl mx-auto p-4 lg:p-8">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-extrabold text-slate-800 font-headline">Historial de Coladas Terminadas</h1>
-          <Button asChild variant="outline">
-            <Link href="/">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Volver al Dashboard
-            </Link>
-          </Button>
         </div>
 
         <div className="bg-white p-6 rounded-xl shadow-2xl">
@@ -86,6 +80,6 @@ export default function HistoryPage() {
           )}
         </div>
       </main>
-    </div>
+    </MainLayout>
   );
 }

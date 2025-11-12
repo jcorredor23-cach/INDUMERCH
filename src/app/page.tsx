@@ -10,8 +10,8 @@ import type { Material, ProductionOrder, Incident, Client, Product, MaterialCons
 import { initialMaterials, initialClients, initialProductionOrders, initialIncidents, products as allProducts } from '@/lib/data';
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from '@/firebase';
+import { MainLayout } from '@/components/main-layout';
 
-import { Header } from '@/components/header';
 import { MaterialsSection } from '@/components/materials-section';
 import { ProductionOrdersSection } from '@/components/production-orders-section';
 import { IncidentsSection } from '@/components/incidents-section';
@@ -191,23 +191,9 @@ export default function SteelFlowDashboard() {
   }
 
   return (
-    <div className="bg-background min-h-screen">
-      <Header />
-      <div className="text-xs text-center text-indigo-400 mb-6 p-2 bg-indigo-50 rounded-lg max-w-4xl mx-auto break-all shadow-sm">
-        <div className="flex items-center justify-center gap-2">
-            <User className="w-4 h-4" /> 
-            ID de Usuario: {user.uid}
-        </div>
-      </div>
+    <MainLayout>
       <main className="max-w-screen-2xl mx-auto p-4 lg:p-8">
-        <div className="flex justify-end mb-4">
-          <Button asChild variant="outline">
-            <Link href="/history">
-              <History className="w-4 h-4 mr-2" />
-              Ver Historial
-            </Link>
-          </Button>
-        </div>
+        <h1 className="text-3xl font-extrabold text-slate-800 font-headline mb-6">Dashboard Principal</h1>
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 items-start">
           <MaterialsSection materials={materials} />
           <ProductionOrdersSection
@@ -232,6 +218,6 @@ export default function SteelFlowDashboard() {
           </div>
         </div>
       </main>
-    </div>
+    </MainLayout>
   );
 }
