@@ -12,7 +12,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Logo } from '@/components/logo';
 
 export default function AuthPage() {
   const [email, setEmail] = useState('');
@@ -60,9 +59,6 @@ export default function AuthPage() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <div className="mb-8">
-        <Logo />
-      </div>
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
         <h2 className="text-2xl font-bold text-center">
           {isLogin ? 'Iniciar Sesión' : 'Crear Cuenta'}
