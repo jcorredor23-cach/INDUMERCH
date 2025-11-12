@@ -14,14 +14,18 @@ export interface Client {
 
 export type ProductionOrderStatus = 'Pendiente' | 'En Proceso' | 'Crítico' | 'Terminada';
 
+export interface MaterialConsumption {
+  materialId: string;
+  consumption: number;
+}
+
 export interface ProductionOrder {
   id: string; // This will be the doc ID for manipulation
   op_id: string; // Human-readable ID e.g. COLADA-001
   status: ProductionOrderStatus;
   product: string;
   qty: number;
-  mp_target_id: string;
-  mp_consumption: number;
+  materials: MaterialConsumption[];
   targetWeek: number;
   client_id: string;
   priority: 'Baja' | 'Media' | 'Alta';

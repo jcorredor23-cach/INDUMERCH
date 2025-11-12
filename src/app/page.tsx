@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react';
 import { getISOWeek } from 'date-fns';
 
-import type { Material, ProductionOrder, Incident, Client, Product } from '@/lib/types';
+import type { Material, ProductionOrder, Incident, Client, Product, MaterialConsumption } from '@/lib/types';
 import { initialMaterials, initialClients, initialProductionOrders, initialIncidents, products as allProducts } from '@/lib/data';
 import { useToast } from "@/hooks/use-toast";
 
@@ -59,15 +59,7 @@ export default function SteelFlowDashboard() {
   };
   
   const handleStartOrder = (orderId: string) => {
-    let targetOrder: ProductionOrder | undefined;
-
-    setOrders(prevOrders => prevOrders.map(order => {
-        if (order.id === orderId) {
-            targetOrder = order;
-            return order;
-        }
-        return order;
-    }));
+    const targetOrder = orders.find(order => order.id === orderId);
 
     if (!targetOrder) {
         toast({ title: "Error", description: "Orden no encontrada.", variant: "destructive" });
@@ -78,26 +70,38 @@ export default function SteelFlowDashboard() {
         toast({ title: "Acción no permitida", description: `${targetOrder.op_id} no está pendiente.`, variant: "destructive" });
         return;
     }
-
-    const material = materialsMap[targetOrder.mp_target_id];
-    if (!material) {
-        toast({ title: "Error de Datos", description: `Materia prima ${targetOrder.mp_target_id} no encontrada.`, variant: "destructive" });
-        return;
-    }
-
-    if (material.stock < targetOrder.mp_consumption) {
-        toast({ 
-            title: "Stock Insuficiente", 
-            description: `Faltan ${targetOrder.mp_consumption - material.stock} ${material.unit} de ${material.name}.`,
-            variant: "destructive" 
-        });
-        return;
+    
+    // Check stock for all materials
+    for (const materialConsumption of targetOrder.materials) {
+        const material = materialsMap[materialConsumption.materialId];
+        if (!material) {
+            toast({ title: "Error de Datos", description: `Materia prima ${materialConsumption.materialId} no encontrada.`, variant: "destructive" });
+            return;
+        }
+        if (material.stock < materialConsumption.consumption) {
+            toast({ 
+                title: "Stock Insuficiente", 
+                description: `Faltan ${materialConsumption.consumption - material.stock} ${material.unit} de ${material.name}.`,
+                variant: "destructive" 
+            });
+            return;
+        }
     }
 
     // Update material stock
-    setMaterials(prevMaterials => prevMaterials.map(mat => 
-        mat.id === material.id ? { ...mat, stock: mat.stock - targetOrder!.mp_consumption } : mat
-    ));
+    setMaterials(prevMaterials => {
+        const newMaterials = [...prevMaterials];
+        for (const materialConsumption of targetOrder.materials) {
+            const matIndex = newMaterials.findIndex(m => m.id === materialConsumption.materialId);
+            if (matIndex !== -1) {
+                newMaterials[matIndex] = {
+                    ...newMaterials[matIndex],
+                    stock: newMaterials[matIndex].stock - materialConsumption.consumption,
+                };
+            }
+        }
+        return newMaterials;
+    });
 
     // Update order status
     setOrders(prevOrders => prevOrders.map(order => 

@@ -1,15 +1,15 @@
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import type { ProductionOrder, ProductionOrderStatus } from "@/lib/types";
+import type { ProductionOrder, ProductionOrderStatus, Material } from "@/lib/types";
 import { formatDateTime } from "@/lib/utils";
 import { cn } from "@/lib/utils";
-import { Clock, Calendar, Droplet, User, Hash } from "lucide-react";
+import { Clock, Calendar, Droplets, User } from "lucide-react";
 import { OpActions } from "./op-actions";
 
 interface OpListItemProps {
     order: ProductionOrder;
     clientName: string;
-    materialUnit: string;
+    materialsMap: Record<string, Material>;
     isCurrentWeek: boolean;
     onStart: (id: string) => void;
     onComplete: (id: string) => void;
@@ -24,7 +24,7 @@ const statusClasses: Record<ProductionOrderStatus, { bg: string; text: string, b
     Terminada: { bg: 'bg-gray-200', text: 'text-gray-800', border: 'border-gray-500' },
 };
 
-export function OpListItem({ order, clientName, materialUnit, isCurrentWeek, ...actionHandlers }: OpListItemProps) {
+export function OpListItem({ order, clientName, materialsMap, isCurrentWeek, ...actionHandlers }: OpListItemProps) {
     const statusInfo = statusClasses[order.status];
     
     const alertBorderClass = order.job_type === 'Express/Small Job' ? 'border-red-600' :
@@ -38,6 +38,11 @@ export function OpListItem({ order, clientName, materialUnit, isCurrentWeek, ...
         return null;
     }
 
+    const consumptionString = order.materials.map(m => {
+        const material = materialsMap[m.materialId];
+        return `${m.consumption} ${material?.unit || 'u.'} de ${material?.name || m.materialId}`;
+    }).join(', ');
+
     return (
         <div className={cn("p-4 bg-white rounded-xl shadow-md mb-3 border-l-8", alertBorderClass)}>
             <div className="flex justify-between items-start">
@@ -49,8 +54,15 @@ export function OpListItem({ order, clientName, materialUnit, isCurrentWeek, ...
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-sm mt-3 text-gray-600">
                 <div className="flex items-center gap-2"><User className="w-4 h-4 text-gray-400" /> <span>Cliente: <span className="font-medium text-gray-800">{clientName}</span></span></div>
                 <div className="flex items-center gap-2"><Calendar className="w-4 h-4 text-gray-400" /> <span>Semana: <span className={cn("font-bold", isCurrentWeek ? 'text-indigo-600' : 'text-gray-800')}>{order.targetWeek}</span> {isCurrentWeek && '(Actual)'}</span></div>
-                <div className="flex items-center gap-2"><Droplet className="w-4 h-4 text-gray-400" /> <span>Consumo: <span className="font-medium text-red-500">{order.mp_consumption} {materialUnit} de {order.mp_target_id}</span></span></div>
             </div>
+             <div className="flex items-start gap-2 mt-3 text-sm text-gray-600">
+                <Droplets className="w-4 h-4 text-gray-400 mt-1 shrink-0" /> 
+                <div className="flex flex-col">
+                    <span className="font-medium text-gray-800">Consumo:</span>
+                    <span className="text-red-500">{consumptionString}</span>
+                </div>
+            </div>
+
 
             <Separator className="my-4" />
 

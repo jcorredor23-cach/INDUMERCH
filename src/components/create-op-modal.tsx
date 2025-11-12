@@ -6,8 +6,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { FilePlus, Plus } from "lucide-react";
-import type { Client, Material, Product, ProductionOrder } from '@/lib/types';
+import { FilePlus, Plus, Trash2 } from "lucide-react";
+import type { Client, Material, Product, ProductionOrder, MaterialConsumption } from '@/lib/types';
 import { getCurrentISOWeek, getCurrentDateTimeLocal } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 
@@ -31,8 +31,7 @@ export function CreateOpModal({ clients, materials, products, onAddOrder }: Crea
   const [productName, setProductName] = useState('');
   const [jobType, setJobType] = useState<'Normal Production' | 'Express/Small Job'>('Normal Production');
   const [targetWeek, setTargetWeek] = useState(String(getCurrentISOWeek()));
-  const [targetMPId, setTargetMPId] = useState(materials[0]?.id || '');
-  const [consumption, setConsumption] = useState('50');
+  const [materialInputs, setMaterialInputs] = useState<MaterialConsumption[]>([{ materialId: materials[0]?.id || '', consumption: 50 }]);
   const [estStartTime, setEstStartTime] = useState(defaultStartTime);
   const [estEndTime, setEstEndTime] = useState(defaultEndTime.toISOString().slice(0, 16));
 
@@ -42,25 +41,52 @@ export function CreateOpModal({ clients, materials, products, onAddOrder }: Crea
     setProductName('');
     setJobType('Normal Production');
     setTargetWeek(String(getCurrentISOWeek()));
-    setTargetMPId(materials[0]?.id || '');
-    setConsumption('50');
+    setMaterialInputs([{ materialId: materials[0]?.id || '', consumption: 50 }]);
     setEstStartTime(getCurrentDateTimeLocal());
     const newEndTime = new Date(Date.now() + 3 * 60 * 60 * 1000);
     newEndTime.setMinutes(newEndTime.getMinutes() - newEndTime.getTimezoneOffset());
     setEstEndTime(newEndTime.toISOString().slice(0, 16));
   };
   
+  const handleMaterialChange = (index: number, field: keyof MaterialConsumption, value: string | number) => {
+    const newInputs = [...materialInputs];
+    if (field === 'consumption') {
+      newInputs[index][field] = Number(value);
+    } else {
+      newInputs[index][field] = value as string;
+    }
+    setMaterialInputs(newInputs);
+  };
+
+  const addMaterialInput = () => {
+    if (materialInputs.length < 4) {
+      setMaterialInputs([...materialInputs, { materialId: materials[0]?.id || '', consumption: 0 }]);
+    }
+  };
+
+  const removeMaterialInput = (index: number) => {
+    const newInputs = materialInputs.filter((_, i) => i !== index);
+    setMaterialInputs(newInputs);
+  };
+  
   const handleSubmit = () => {
-    if (!clientId || !productName || !targetMPId || !consumption) {
+    if (!clientId || !productName ) {
       toast({ title: "Campos incompletos", description: "Por favor, complete todos los campos obligatorios.", variant: "destructive" });
       return;
     }
-    const consumptionNum = parseInt(consumption, 10);
-    if (isNaN(consumptionNum) || consumptionNum <= 0) {
+    const validMaterials = materialInputs.filter(m => m.materialId && m.consumption > 0);
+    if(validMaterials.length === 0){
+        toast({ title: "Materia prima requerida", description: "Debe especificar al menos un material a consumir.", variant: "destructive" });
+        return;
+    }
+
+    const totalConsumption = validMaterials.reduce((sum, m) => sum + m.consumption, 0);
+    if (totalConsumption <= 0) {
       toast({ title: "Consumo inválido", description: "La cantidad de consumo debe ser un número positivo.", variant: "destructive" });
       return;
     }
-     const startTimeMs = new Date(estStartTime).getTime();
+
+    const startTimeMs = new Date(estStartTime).getTime();
     const endTimeMs = new Date(estEndTime).getTime();
     if (startTimeMs >= endTimeMs) {
       toast({ title: "Fechas inválidas", description: "La hora de fin debe ser posterior a la de inicio.", variant: "destructive" });
@@ -73,11 +99,10 @@ export function CreateOpModal({ clients, materials, products, onAddOrder }: Crea
       product: productName,
       job_type: jobType,
       targetWeek: parseInt(targetWeek),
-      mp_target_id: targetMPId,
-      mp_consumption: consumptionNum,
+      materials: validMaterials,
       start_time_est: startTimeMs,
       end_time_est: endTimeMs,
-      qty: parseInt(consumption) // Simplified for now
+      qty: totalConsumption,
     });
     
     setOpen(false);
@@ -152,24 +177,35 @@ export function CreateOpModal({ clients, materials, products, onAddOrder }: Crea
                 </Select>
                 <p className="text-xs text-red-500 mt-1">Marcar "Express" genera alerta visual.</p>
             </div>
-            <div className="grid grid-cols-3 gap-4">
-                <div>
-                    <Label htmlFor="op-target-week">Semana Objetivo</Label>
-                    <Input id="op-target-week" type="number" value={targetWeek} onChange={e => setTargetWeek(e.target.value)} min="1" max="53" />
-                </div>
-                <div className="col-span-2">
-                    <Label>Materia Prima a Consumir</Label>
-                    <div className="flex space-x-2">
-                         <Select value={targetMPId} onValueChange={setTargetMPId}>
-                            <SelectTrigger className="w-1/2"><SelectValue /></SelectTrigger>
-                            <SelectContent>
-                                {materials.map(mp => <SelectItem key={mp.id} value={mp.id}>{mp.name} ({mp.unit})</SelectItem>)}
-                            </SelectContent>
-                        </Select>
-                        <Input type="number" value={consumption} onChange={e => setConsumption(e.target.value)} min="1" placeholder="Cantidad" className="w-1/2" />
-                    </div>
-                </div>
+            <div>
+                <Label htmlFor="op-target-week">Semana Objetivo</Label>
+                <Input id="op-target-week" type="number" value={targetWeek} onChange={e => setTargetWeek(e.target.value)} min="1" max="53" />
             </div>
+
+            <hr/>
+            <h4 className="text-base font-semibold text-gray-700">Materia Prima a Consumir</h4>
+            <div className="space-y-3">
+              {materialInputs.map((input, index) => (
+                <div key={index} className="flex items-center space-x-2">
+                  <Select value={input.materialId} onValueChange={(v) => handleMaterialChange(index, 'materialId', v)}>
+                      <SelectTrigger className="w-1/2"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                          {materials.map(mp => <SelectItem key={mp.id} value={mp.id}>{mp.name} ({mp.unit})</SelectItem>)}
+                      </SelectContent>
+                  </Select>
+                  <Input type="number" value={input.consumption} onChange={e => handleMaterialChange(index, 'consumption', e.target.value)} min="0" placeholder="Cantidad" className="w-1/2" />
+                   <Button variant="ghost" size="icon" onClick={() => removeMaterialInput(index)} className="text-red-500 hover:bg-red-100 h-8 w-8">
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </div>
+              ))}
+              {materialInputs.length < 4 && (
+                <Button onClick={addMaterialInput} variant="outline" size="sm" className="w-full mt-2">
+                  <Plus className="w-4 h-4 mr-2" /> Añadir Otro Material
+                </Button>
+              )}
+            </div>
+
             <hr />
             <h4 className="text-base font-semibold text-gray-700">Estimación de Tiempos</h4>
             <div className="grid grid-cols-2 gap-4">

@@ -11,11 +11,11 @@ export const initialClients: Client[] = [
 ];
 
 export const initialMaterials: Material[] = [
-  { id: 'ChatarraAcero', name: 'Chatarra de Acero (Carga)', stock: 48, unit: 'ton', min_stock: 10 },
-  { id: 'Manganeso', name: 'Acero al Manganeso (FeMn)', stock: 2500, unit: 'kg', min_stock: 500 },
-  { id: 'AltoCromo', name: 'Acero al Alto Cromo (FeCr)', stock: 1800, unit: 'kg', min_stock: 400 },
-  { id: 'Inoxidable', name: 'Acero Inoxidable (Chatarra)', stock: 3500, unit: 'kg', min_stock: 1000 },
-  { id: 'HierroGris', name: 'Arrabio/Hierro Gris', stock: 35, unit: 'ton', min_stock: 5 },
+  { id: 'ChatarraAcero', name: 'Chatarra de Acero (Carga)', stock: 58, unit: 'ton', min_stock: 10 },
+  { id: 'Manganeso', name: 'Acero al Manganeso (FeMn)', stock: 15000, unit: 'kg', min_stock: 500 },
+  { id: 'AltoCromo', name: 'Acero al Alto Cromo (FeCr)', stock: 8000, unit: 'kg', min_stock: 400 },
+  { id: 'Inoxidable', name: 'Acero Inoxidable (Chatarra)', stock: 15000, unit: 'kg', min_stock: 1000 },
+  { id: 'HierroGris', name: 'Arrabio/Hierro Gris', stock: 45, unit: 'ton', min_stock: 5 },
   { id: 'ArenaMoldeo', name: 'Arena de Moldeo', stock: 25, unit: 'm3', min_stock: 5 }
 ];
 
@@ -45,8 +45,7 @@ export const initialProductionOrders: ProductionOrder[] = [
     status: 'Terminada',
     product: 'Mandíbula (Minería)',
     qty: 50,
-    mp_target_id: 'ChatarraAcero',
-    mp_consumption: 10,
+    materials: [{ materialId: 'ChatarraAcero', consumption: 10 }],
     targetWeek: CURRENT_WEEK - 1,
     client_id: 'C-001-MIN',
     priority: 'Media',
@@ -64,8 +63,7 @@ export const initialProductionOrders: ProductionOrder[] = [
     status: 'En Proceso',
     product: 'Martillo (Minería)',
     qty: 100,
-    mp_target_id: 'AltoCromo',
-    mp_consumption: 5,
+    materials: [{ materialId: 'AltoCromo', consumption: 500 }],
     targetWeek: CURRENT_WEEK,
     client_id: 'C-002-SID',
     priority: 'Alta',
@@ -82,8 +80,7 @@ export const initialProductionOrders: ProductionOrder[] = [
     status: 'Pendiente',
     product: 'Brazo Mezclador (Construcción)',
     qty: 20,
-    mp_target_id: 'HierroGris',
-    mp_consumption: 2,
+    materials: [{ materialId: 'HierroGris', consumption: 2 }],
     targetWeek: CURRENT_WEEK,
     client_id: 'C-003-CON',
     priority: 'Media',
@@ -98,8 +95,7 @@ export const initialProductionOrders: ProductionOrder[] = [
     status: 'Crítico',
     product: 'Rueda Puente Grúa (Siderúrgica)',
     qty: 4,
-    mp_target_id: 'Manganeso',
-    mp_consumption: 15,
+    materials: [{ materialId: 'Manganeso', consumption: 1500 }],
     targetWeek: CURRENT_WEEK,
     client_id: 'C-002-SID',
     priority: 'Alta',

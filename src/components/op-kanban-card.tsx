@@ -1,12 +1,12 @@
 import { Badge } from "@/components/ui/badge";
-import type { ProductionOrder, ProductionOrderStatus } from "@/lib/types";
+import type { ProductionOrder, ProductionOrderStatus, Material } from "@/lib/types";
 import { OpActions } from './op-actions';
 import { cn } from "@/lib/utils";
 
 interface OpKanbanCardProps {
     order: ProductionOrder;
     clientName: string;
-    materialUnit: string;
+    materialsMap: Record<string, Material>;
     onStart: (id: string) => void;
     onComplete: (id: string) => void;
     onMarkCritical: (id: string) => void;
@@ -20,12 +20,17 @@ const statusClasses: Record<ProductionOrderStatus, { bg: string; border: string;
     Terminada: { bg: 'bg-gray-500', border: 'border-gray-500' },
 };
 
-export function OpKanbanCard({ order, clientName, materialUnit, ...actionHandlers }: OpKanbanCardProps) {
+export function OpKanbanCard({ order, clientName, materialsMap, ...actionHandlers }: OpKanbanCardProps) {
     const statusClass = statusClasses[order.status];
 
     const alertBorderClass = order.job_type === 'Express/Small Job' ? 'border-red-600' :
                              order.priority === 'Alta' ? 'border-amber-500' :
                              order.status === 'Crítico' ? 'border-red-600' : 'border-indigo-500';
+
+    const consumptionString = order.materials.map(m => {
+        const material = materialsMap[m.materialId];
+        return `${m.consumption} ${material?.unit || 'u.'} ${material?.name || m.materialId}`;
+    }).join(', ');
 
     return (
         <div className={cn("kanban-card p-3 bg-white rounded-lg shadow border-l-4 mb-3 cursor-grab active:cursor-grabbing hover:shadow-md transition-shadow", alertBorderClass)}>
@@ -35,7 +40,7 @@ export function OpKanbanCard({ order, clientName, materialUnit, ...actionHandler
             </div>
             <p className="text-sm text-gray-800 font-medium truncate">{clientName}</p>
             <p className="text-xs text-indigo-700 font-medium mt-1 truncate">{order.product}</p>
-            <p className="text-xs text-gray-500 mt-1">Sem: {order.targetWeek} | {order.mp_consumption} {materialUnit} de {order.mp_target_id}</p>
+            <p className="text-xs text-gray-500 mt-1 truncate" title={consumptionString}>Sem: {order.targetWeek} | {consumptionString}</p>
             <div className="mt-2 pt-2 border-t">
                 <OpActions order={order} {...actionHandlers} isKanban={true} />
             </div>

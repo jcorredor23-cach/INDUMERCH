@@ -62,7 +62,7 @@ export function ProductionOrdersSection({ orders, clients, materials, products, 
             key={order.id} 
             order={order} 
             clientName={clientsMap[order.client_id] || order.client_id}
-            materialUnit={materialsMap[order.mp_target_id]?.unit || 'u.'}
+            materialsMap={materialsMap}
             {...actionHandlers}
         />
       ));
@@ -96,7 +96,7 @@ export function ProductionOrdersSection({ orders, clients, materials, products, 
                     key={order.id}
                     order={order}
                     clientName={clientsMap[order.client_id] || order.client_id}
-                    materialUnit={materialsMap[order.mp_target_id]?.unit || 'u.'}
+                    materialsMap={materialsMap}
                     isCurrentWeek={order.targetWeek === currentWeek}
                     {...actionHandlers}
                   />
