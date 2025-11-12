@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, History, User, LogOut } from 'lucide-react';
+import { Home, History, User, LogOut, Package } from 'lucide-react';
 import {
   SidebarProvider,
   Sidebar,
@@ -49,6 +49,18 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
                 <Link href="/">
                   <Home />
                   <span>Dashboard</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                isActive={pathname === '/inventory'}
+                tooltip="Inventario"
+              >
+                <Link href="/inventory">
+                  <Package />
+                  <span>Inventario</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
