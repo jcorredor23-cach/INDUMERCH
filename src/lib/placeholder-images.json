@@ -2,9 +2,9 @@
   "placeholderImages": [
     {
       "id": "logo",
-      "description": "SteelFlow application logo",
-      "imageUrl": "https://images.unsplash.com/photo-1551041777-575d385554f6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxtb2x0ZW4lMjBzdGVlbHxlbnwwfHx8fDE3MTc2NTU0NTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "molten steel"
+      "description": "InduControl application logo",
+      "imageUrl": "https://i.postimg.cc/8PryCg1s/image.png",
+      "imageHint": "industrial control"
     }
   ]
 }
