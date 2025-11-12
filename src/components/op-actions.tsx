@@ -89,7 +89,7 @@ export function OpActions({ order, onStart, onComplete, onMarkCritical, onDelete
           <Tooltip>
             <TooltipTrigger asChild>
               <div>
-                <AlertDialogTrigger asChild>
+                <AlertDialogTrigger asChild disabled={isDeleteDisabled}>
                   <Button
                     variant="ghost"
                     size="icon"

@@ -18,14 +18,14 @@ interface CreateOpModalProps {
   onAddOrder: (order: Omit<ProductionOrder, 'id' | 'op_id' | 'createdAt' | 'status'>) => void;
 }
 
+const defaultStartTime = getCurrentDateTimeLocal();
+const defaultEndTime = new Date(Date.now() + 3 * 60 * 60 * 1000);
+defaultEndTime.setMinutes(defaultEndTime.getMinutes() - defaultEndTime.getTimezoneOffset());
+
 export function CreateOpModal({ clients, materials, products, onAddOrder }: CreateOpModalProps) {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
-
-  const defaultStartTime = getCurrentDateTimeLocal();
-  const defaultEndTime = new Date(Date.now() + 3 * 60 * 60 * 1000);
-  defaultEndTime.setMinutes(defaultEndTime.getMinutes() - defaultEndTime.getTimezoneOffset());
-
+  
   const [clientId, setClientId] = useState('');
   const [priority, setPriority] = useState<'Baja' | 'Media' | 'Alta'>('Media');
   const [productName, setProductName] = useState('');
