@@ -1,13 +1,15 @@
 
 "use client";
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getISOWeek } from 'date-fns';
 
 import type { Material, ProductionOrder, Incident, Client, Product, MaterialConsumption } from '@/lib/types';
 import { initialMaterials, initialClients, initialProductionOrders, initialIncidents, products as allProducts } from '@/lib/data';
 import { useToast } from "@/hooks/use-toast";
+import { useUser } from '@/firebase';
 
 import { Header } from '@/components/header';
 import { MaterialsSection } from '@/components/materials-section';
@@ -18,6 +20,9 @@ import { ProductionChart } from '@/components/production-chart';
 import { Button } from '@/components/ui/button';
 
 export default function SteelFlowDashboard() {
+  const { user, isUserLoading } = useUser();
+  const router = useRouter();
+
   const [materials, setMaterials] = useState<Material[]>(initialMaterials);
   const [clients] = useState<Client[]>(initialClients);
   const [orders, setOrders] = useState<ProductionOrder[]>(initialProductionOrders);
@@ -27,6 +32,12 @@ export default function SteelFlowDashboard() {
   );
 
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (!isUserLoading && !user) {
+      router.push('/auth');
+    }
+  }, [user, isUserLoading, router]);
 
   const clientsMap = useMemo(() => {
     return clients.reduce((acc, client) => {
@@ -175,6 +186,9 @@ export default function SteelFlowDashboard() {
     toast({ title: "Novedad Registrada", description: `Se ha registrado una nueva novedad de tipo: ${newIncident.type}.` });
   };
 
+  if (isUserLoading || !user) {
+    return <div className="flex items-center justify-center min-h-screen">Cargando...</div>;
+  }
 
   return (
     <div className="bg-background min-h-screen">
@@ -182,7 +196,7 @@ export default function SteelFlowDashboard() {
       <div className="text-xs text-center text-indigo-400 mb-6 p-2 bg-indigo-50 rounded-lg max-w-4xl mx-auto break-all shadow-sm">
         <div className="flex items-center justify-center gap-2">
             <User className="w-4 h-4" /> 
-            ID de Usuario: simulated-user-id-for-dev
+            ID de Usuario: {user.uid}
         </div>
       </div>
       <main className="max-w-screen-2xl mx-auto p-4 lg:p-8">
