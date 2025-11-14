@@ -33,7 +33,7 @@ export function OpKanbanCard({ order, clientName, materialsMap, ...actionHandler
     }).join(', ');
 
     return (
-        <div className={cn("kanban-card p-3 bg-white rounded-lg shadow border-l-4 mb-3 cursor-grab active:cursor-grabbing hover:shadow-md transition-shadow", alertBorderClass)}>
+        <div className={cn("kanban-card p-3 bg-white rounded-lg shadow border-l-4 mb-3 cursor-grab active:cursor-grabbing hover:shadow-md transition-all duration-300 hover:-translate-y-1", alertBorderClass)}>
             <div className="flex justify-between items-center mb-1">
                 <span className="text-sm font-bold text-indigo-700">{order.op_id}</span>
                 <Badge className={cn("text-xs", statusClass.bg)}>{order.status}</Badge>

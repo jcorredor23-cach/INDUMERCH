@@ -44,7 +44,7 @@ export function OpListItem({ order, clientName, materialsMap, isCurrentWeek, ...
     }).join(', ');
 
     return (
-        <div className={cn("p-4 bg-white rounded-xl shadow-md mb-3 border-l-8", alertBorderClass)}>
+        <div className={cn("p-4 bg-white rounded-xl shadow-md mb-3 border-l-8 transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1", alertBorderClass)}>
             <div className="flex justify-between items-start">
                 <h3 className="text-xl font-bold text-gray-800 font-headline">{order.op_id}</h3>
                 <Badge className={cn(statusInfo.bg, statusInfo.text, "text-xs font-bold")}>{order.status.toUpperCase()}</Badge>

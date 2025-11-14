@@ -112,7 +112,7 @@ export function IncidentsSection({ incidents, orders, clients, onAddIncident }: 
           <p className="text-center text-gray-500 py-6">Sin novedades registradas.</p>
         ) : (
           incidents.map(incident => (
-            <div key={incident.id} className={`p-3 bg-white rounded-lg shadow-sm border-l-4 ${typeClasses[incident.type]}`}>
+            <div key={incident.id} className={`p-3 bg-white rounded-lg shadow-sm border-l-4 ${typeClasses[incident.type]} transition-transform duration-200 hover:scale-105`}>
               <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${typeClasses[incident.type].replace('border-l-4', '')}`}>{incident.type}</span>
               <p className="text-sm text-gray-800 font-medium my-1">{incident.description}</p>
               <div className="text-xs text-gray-500 flex justify-between items-center mt-2 pt-2 border-t">

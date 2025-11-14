@@ -26,7 +26,7 @@ export function MaterialsSection({ materials }: MaterialsSectionProps) {
             }
 
             return (
-              <div key={mp.id} className={`flex items-center justify-between p-4 ${stockClass} rounded-lg shadow-sm border-l-4`}>
+              <div key={mp.id} className={`flex items-center justify-between p-4 ${stockClass} rounded-lg shadow-sm border-l-4 transition-transform duration-200 hover:scale-105`}>
                 <div className="font-semibold">{mp.name}</div>
                 <div className="text-right">
                   <span className="text-lg font-bold">{mp.stock.toLocaleString()}</span>
