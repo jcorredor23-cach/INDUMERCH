@@ -12,7 +12,7 @@ import { MainLayout } from '@/components/main-layout';
 import { ProductionOrdersSection } from '@/components/production-orders-section';
 import { IncidentsSection } from '@/components/incidents-section';
 import { ProductionChart } from '@/components/production-chart';
-import { MaterialsSection } from '@/components/materials-section';
+import { ParetoChart } from '@/components/pareto-chart';
 
 export default function SteelFlowDashboard() {
 
@@ -201,6 +201,9 @@ export default function SteelFlowDashboard() {
               />
               <ProductionChart orders={orders} />
           </div>
+           <div className="lg:col-span-2">
+              <ParetoChart incidents={incidents} />
+            </div>
         </div>
       </main>
     </MainLayout>
