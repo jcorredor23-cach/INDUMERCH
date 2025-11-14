@@ -33,11 +33,13 @@ export function CreateOpModal({ clients, materials, products, onAddOrder }: Crea
   const [estEndTime, setEstEndTime] = useState('');
 
   useEffect(() => {
-    const defaultStartTime = getCurrentDateTimeLocal();
-    const defaultEndTime = new Date(Date.now() + 3 * 60 * 60 * 1000);
-    defaultEndTime.setMinutes(defaultEndTime.getMinutes() - defaultEndTime.getTimezoneOffset());
-    setEstStartTime(defaultStartTime);
-    setEstEndTime(defaultEndTime.toISOString().slice(0, 16));
+    if (open) {
+      const defaultStartTime = getCurrentDateTimeLocal();
+      const defaultEndTime = new Date(Date.now() + 3 * 60 * 60 * 1000);
+      defaultEndTime.setMinutes(defaultEndTime.getMinutes() - defaultEndTime.getTimezoneOffset());
+      setEstStartTime(defaultStartTime);
+      setEstEndTime(defaultEndTime.toISOString().slice(0, 16));
+    }
   }, [open]);
 
   const resetForm = () => {

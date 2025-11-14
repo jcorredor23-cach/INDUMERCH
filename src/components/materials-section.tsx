@@ -1,3 +1,4 @@
+
 import { Package, TrendingDown, TrendingUp, AlertTriangle } from "lucide-react";
 import type { Material } from "@/lib/types";
 import { PredictiveStockAlertsOutput } from "@/ai/flows/predictive-stock-alerts";

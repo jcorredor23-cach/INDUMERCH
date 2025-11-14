@@ -14,10 +14,15 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
 export default function InventoryPage() {
-  const [materials] = useState<Material[]>(initialMaterials);
-  const [orders] = useState<ProductionOrder[]>(initialProductionOrders);
+  const [materials, setMaterials] = useState<Material[]>(initialMaterials);
+  const [orders, setOrders] = useState<ProductionOrder[]>(initialProductionOrders);
   const [predictions, setPredictions] = useState<PredictiveStockAlertsOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleRunPrediction = async () => {
     setIsLoading(true);
@@ -44,6 +49,10 @@ export default function InventoryPage() {
   };
   
   const shortagePredictions = predictions?.filter(p => p.shortage);
+
+  if (!isClient) {
+    return null; // o un spinner de carga
+  }
 
   return (
     <MainLayout>

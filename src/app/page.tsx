@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { getISOWeek } from 'date-fns';
 
 import type { Material, ProductionOrder, Incident, Client, Product } from '@/lib/types';
@@ -42,6 +42,11 @@ export default function SteelFlowDashboard() {
   }, [materials]);
 
   const activeOrders = useMemo(() => orders.filter(o => o.status !== 'Terminada'), [orders]);
+  
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleCreateOrder = (newOrderData: Omit<ProductionOrder, 'id' | 'op_id' | 'createdAt' | 'status'>) => {
     const newOPNumber = lastOPNumber + 1;
@@ -173,6 +178,10 @@ export default function SteelFlowDashboard() {
     setIncidents(prevIncidents => [newIncident, ...prevIncidents]);
     toast({ title: "Novedad Registrada", description: `Se ha registrado una nueva novedad de tipo: ${newIncident.type}.` });
   };
+
+  if (!isClient) {
+    return null; // O un spinner de carga
+  }
 
   return (
     <MainLayout>
