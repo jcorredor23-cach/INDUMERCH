@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { initialClients, initialProductionOrders, initialMaterials } from '@/lib/data';
 import type { Client, ProductionOrder, Material } from '@/lib/types';
@@ -25,6 +25,11 @@ import { MainLayout } from '@/components/main-layout';
 export default function HistoryPage() {
   const [orders] = useState<ProductionOrder[]>(initialProductionOrders);
   const [clients] = useState<Client[]>(initialClients);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const finishedOrders = useMemo(() => orders.filter(o => o.status === 'Terminada'), [orders]);
 
@@ -60,7 +65,7 @@ export default function HistoryPage() {
                     <TableCell className="font-medium">{order.op_id}</TableCell>
                     <TableCell>{order.product}</TableCell>
                     <TableCell>{clientsMap[order.client_id]}</TableCell>
-                    <TableCell>{formatDateTime(order.end_time_real)}</TableCell>
+                    <TableCell>{isClient ? formatDateTime(order.end_time_real) : '...'}</TableCell>
                     <TableCell>{order.qty} kg</TableCell>
                   </TableRow>
                 ))}

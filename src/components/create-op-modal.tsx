@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -18,10 +19,6 @@ interface CreateOpModalProps {
   onAddOrder: (order: Omit<ProductionOrder, 'id' | 'op_id' | 'createdAt' | 'status'>) => void;
 }
 
-const defaultStartTime = getCurrentDateTimeLocal();
-const defaultEndTime = new Date(Date.now() + 3 * 60 * 60 * 1000);
-defaultEndTime.setMinutes(defaultEndTime.getMinutes() - defaultEndTime.getTimezoneOffset());
-
 export function CreateOpModal({ clients, materials, products, onAddOrder }: CreateOpModalProps) {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
@@ -32,8 +29,16 @@ export function CreateOpModal({ clients, materials, products, onAddOrder }: Crea
   const [jobType, setJobType] = useState<'Normal Production' | 'Express/Small Job'>('Normal Production');
   const [targetWeek, setTargetWeek] = useState(String(getCurrentISOWeek()));
   const [materialInputs, setMaterialInputs] = useState<MaterialConsumption[]>([{ materialId: materials[0]?.id || '', consumption: 0 }]);
-  const [estStartTime, setEstStartTime] = useState(defaultStartTime);
-  const [estEndTime, setEstEndTime] = useState(defaultEndTime.toISOString().slice(0, 16));
+  const [estStartTime, setEstStartTime] = useState('');
+  const [estEndTime, setEstEndTime] = useState('');
+
+  useEffect(() => {
+    const defaultStartTime = getCurrentDateTimeLocal();
+    const defaultEndTime = new Date(Date.now() + 3 * 60 * 60 * 1000);
+    defaultEndTime.setMinutes(defaultEndTime.getMinutes() - defaultEndTime.getTimezoneOffset());
+    setEstStartTime(defaultStartTime);
+    setEstEndTime(defaultEndTime.toISOString().slice(0, 16));
+  }, [open]);
 
   const resetForm = () => {
     setClientId('');
@@ -226,5 +231,3 @@ export function CreateOpModal({ clients, materials, products, onAddOrder }: Crea
     </Dialog>
   );
 }
-
-    

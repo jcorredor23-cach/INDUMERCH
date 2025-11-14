@@ -1,3 +1,6 @@
+
+"use client";
+
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import type { ProductionOrder, ProductionOrderStatus, Material } from "@/lib/types";
@@ -5,6 +8,8 @@ import { formatDateTime } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import { Clock, Calendar, Droplets, User } from "lucide-react";
 import { OpActions } from "./op-actions";
+import { useState, useEffect } from "react";
+
 
 interface OpListItemProps {
     order: ProductionOrder;
@@ -26,6 +31,11 @@ const statusClasses: Record<ProductionOrderStatus, { bg: string; text: string, b
 
 export function OpListItem({ order, clientName, materialsMap, isCurrentWeek, ...actionHandlers }: OpListItemProps) {
     const statusInfo = statusClasses[order.status];
+    const [isClient, setIsClient] = useState(false);
+
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
     
     const alertBorderClass = order.job_type === 'Express/Small Job' ? 'border-red-600' :
                              order.priority === 'Alta' ? 'border-amber-500' :
@@ -69,13 +79,13 @@ export function OpListItem({ order, clientName, materialsMap, isCurrentWeek, ...
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
                  <div>
                     <p className="font-bold text-gray-500 mb-1">Tiempos Estimados:</p>
-                    <div className="flex items-center gap-2 text-gray-700"><Clock className="w-3 h-3"/> Inicio: {formatDateTime(order.start_time_est)}</div>
-                    <div className="flex items-center gap-2 text-gray-700"><Clock className="w-3 h-3"/> Fin: {formatDateTime(order.end_time_est)}</div>
+                    <div className="flex items-center gap-2 text-gray-700"><Clock className="w-3 h-3"/> Inicio: {isClient ? formatDateTime(order.start_time_est) : '...'}</div>
+                    <div className="flex items-center gap-2 text-gray-700"><Clock className="w-3 h-3"/> Fin: {isClient ? formatDateTime(order.end_time_est) : '...'}</div>
                 </div>
                  <div>
                     <p className="font-bold text-gray-500 mb-1">Tiempos Reales:</p>
-                    <div className="flex items-center gap-2 text-gray-700"><Clock className="w-3 h-3"/> Inicio: {formatDateTime(order.start_time_real)}</div>
-                    <div className="flex items-center gap-2 text-gray-700"><Clock className="w-3 h-3"/> Fin: {formatDateTime(order.end_time_real)}</div>
+                    <div className="flex items-center gap-2 text-gray-700"><Clock className="w-3 h-3"/> Inicio: {isClient ? formatDateTime(order.start_time_real) : '...'}</div>
+                    <div className="flex items-center gap-2 text-gray-700"><Clock className="w-3 h-3"/> Fin: {isClient ? formatDateTime(order.end_time_real) : '...'}</div>
                 </div>
             </div>
 

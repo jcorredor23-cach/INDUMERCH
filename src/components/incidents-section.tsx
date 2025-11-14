@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
@@ -100,6 +101,11 @@ export function IncidentsSection({ incidents, orders, clients, onAddIncident }: 
     'Calidad': 'bg-purple-100 text-purple-700 border-purple-500',
     'Otro': 'bg-gray-100 text-gray-700 border-gray-400',
   };
+    const [isClient, setIsClient] = useState(false);
+
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
 
   return (
     <section className="bg-white p-6 rounded-xl shadow-2xl">
@@ -117,7 +123,7 @@ export function IncidentsSection({ incidents, orders, clients, onAddIncident }: 
               <p className="text-sm text-gray-800 font-medium my-1">{incident.description}</p>
               <div className="text-xs text-gray-500 flex justify-between items-center mt-2 pt-2 border-t">
                   <span>OP: <span className="font-semibold text-indigo-700">{incident.op_id || 'N/A'}</span></span>
-                  <span>{formatDateTime(incident.timestamp)}</span>
+                  <span>{isClient ? formatDateTime(incident.timestamp) : '...'}</span>
               </div>
             </div>
           ))
@@ -126,5 +132,3 @@ export function IncidentsSection({ incidents, orders, clients, onAddIncident }: 
     </section>
   );
 }
-
-    
