@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { initialClients, initialProductionOrders, initialMaterials } from '@/lib/data';
 import type { Client, ProductionOrder, Material } from '@/lib/types';
 import { OpListItem } from '@/components/op-list-item';
-import { Header } from '@/components/header';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import {

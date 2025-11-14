@@ -86,4 +86,3 @@ export function ParetoChart({ incidents }: ParetoChartProps) {
         </Card>
     );
 }
-
