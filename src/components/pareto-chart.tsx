@@ -3,7 +3,7 @@
 
 import { useMemo } from "react";
 import { BarChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ComposedChart } from "recharts";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Incident } from "@/lib/types";
 import { AlertCircle } from "lucide-react";
 
@@ -45,6 +45,9 @@ export function ParetoChart({ incidents }: ParetoChartProps) {
                     <AlertCircle className="w-5 h-5 mr-2 text-slate-500" />
                     Diagnóstico de Problemas Críticos (Pareto)
                 </CardTitle>
+                <CardDescription>
+                    Este gráfico ordena las causas de los problemas de mayor a menor frecuencia, ayudando a identificar los "pocos vitales" que causan la mayoría de los problemas (Principio 80/20). La línea naranja muestra el porcentaje acumulado del impacto total.
+                </CardDescription>
             </CardHeader>
             <CardContent>
                 <div className="h-[400px] w-full">
@@ -53,13 +56,13 @@ export function ParetoChart({ incidents }: ParetoChartProps) {
                             <ComposedChart
                                 data={paretoData}
                                 margin={{
-                                    top: 20, right: 30, left: 0, bottom: 20,
+                                    top: 20, right: 30, left: 20, bottom: 50,
                                 }}
                             >
                                 <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="name" angle={-45} textAnchor="end" height={80} interval={0} tick={{fontSize: 12}} />
-                                <YAxis yAxisId="left" orientation="left" stroke="#8884d8" label={{ value: 'Cantidad de Incidentes', angle: -90, position: 'insideLeft', offset: 10, style: { textAnchor: 'middle', fill: '#666' } }}/>
-                                <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" label={{ value: 'Porcentaje Acumulado (%)', angle: 90, position: 'insideRight', offset: 10, style: { textAnchor: 'middle', fill: '#666' } }} />
+                                <XAxis dataKey="name" angle={-45} textAnchor="end" height={100} interval={0} tick={{fontSize: 12}} />
+                                <YAxis yAxisId="left" orientation="left" stroke="#413ea0" label={{ value: 'Cantidad de Incidentes', angle: -90, position: 'insideLeft', offset: -10, style: { textAnchor: 'middle', fill: '#666', fontSize: 14 } }}/>
+                                <YAxis yAxisId="right" orientation="right" stroke="#ff7300" label={{ value: 'Porcentaje Acumulado (%)', angle: 90, position: 'insideRight', offset: 0, style: { textAnchor: 'middle', fill: '#666', fontSize: 14 } }} />
                                 <Tooltip
                                      contentStyle={{
                                         backgroundColor: 'white',
