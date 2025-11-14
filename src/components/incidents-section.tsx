@@ -126,3 +126,5 @@ export function IncidentsSection({ incidents, orders, clients, onAddIncident }: 
     </section>
   );
 }
+
+    

@@ -43,7 +43,7 @@ export interface Incident {
   id: string;
   type: 'Falla Equipo' | 'Error Humano' | 'Retraso MP' | 'Calidad' | 'Otro';
   description: string;
-  op_id?: string | null;
+  op_id?: string;
   timestamp: number;
 }
 
@@ -51,3 +51,5 @@ export interface Product {
     group: string;
     name: string;
 }
+
+    

@@ -31,7 +31,7 @@ export function CreateOpModal({ clients, materials, products, onAddOrder }: Crea
   const [productName, setProductName] = useState('');
   const [jobType, setJobType] = useState<'Normal Production' | 'Express/Small Job'>('Normal Production');
   const [targetWeek, setTargetWeek] = useState(String(getCurrentISOWeek()));
-  const [materialInputs, setMaterialInputs] = useState<MaterialConsumption[]>([{ materialId: materials[0]?.id || '', consumption: 50 }]);
+  const [materialInputs, setMaterialInputs] = useState<MaterialConsumption[]>([{ materialId: materials[0]?.id || '', consumption: 0 }]);
   const [estStartTime, setEstStartTime] = useState(defaultStartTime);
   const [estEndTime, setEstEndTime] = useState(defaultEndTime.toISOString().slice(0, 16));
 
@@ -41,7 +41,7 @@ export function CreateOpModal({ clients, materials, products, onAddOrder }: Crea
     setProductName('');
     setJobType('Normal Production');
     setTargetWeek(String(getCurrentISOWeek()));
-    setMaterialInputs([{ materialId: materials[0]?.id || '', consumption: 50 }]);
+    setMaterialInputs([{ materialId: materials[0]?.id || '', consumption: 0 }]);
     setEstStartTime(getCurrentDateTimeLocal());
     const newEndTime = new Date(Date.now() + 3 * 60 * 60 * 1000);
     newEndTime.setMinutes(newEndTime.getMinutes() - newEndTime.getTimezoneOffset());
@@ -188,7 +188,7 @@ export function CreateOpModal({ clients, materials, products, onAddOrder }: Crea
               {materialInputs.map((input, index) => (
                 <div key={index} className="flex items-center space-x-2">
                   <Select value={input.materialId} onValueChange={(v) => handleMaterialChange(index, 'materialId', v)}>
-                      <SelectTrigger className="w-1/2"><SelectValue /></SelectTrigger>
+                      <SelectTrigger className="w-1/2"><SelectValue placeholder="Seleccione material"/></SelectTrigger>
                       <SelectContent>
                           {materials.map(mp => <SelectItem key={mp.id} value={mp.id}>{mp.name} ({mp.unit})</SelectItem>)}
                       </SelectContent>
@@ -226,3 +226,5 @@ export function CreateOpModal({ clients, materials, products, onAddOrder }: Crea
     </Dialog>
   );
 }
+
+    
