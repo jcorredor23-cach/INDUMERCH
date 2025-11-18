@@ -6,7 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import type { ProductionOrder, ProductionOrderStatus, Material } from "@/lib/types";
 import { formatDateTime } from "@/lib/utils";
 import { cn } from "@/lib/utils";
-import { Clock, Calendar, Droplets, User } from "lucide-react";
+import { Clock, Calendar, Droplets, User, HardHat, Cog } from "lucide-react";
 import { OpActions } from "./op-actions";
 import { useState, useEffect } from "react";
 
@@ -15,6 +15,8 @@ interface OpListItemProps {
     order: ProductionOrder;
     clientName: string;
     materialsMap: Record<string, Material>;
+    operatorName: string;
+    machineName: string;
     isCurrentWeek: boolean;
     onStart: (id: string) => void;
     onComplete: (id: string) => void;
@@ -29,7 +31,7 @@ const statusClasses: Record<ProductionOrderStatus, { bg: string; text: string, b
     Terminada: { bg: 'bg-gray-200', text: 'text-gray-800', border: 'border-gray-500' },
 };
 
-export function OpListItem({ order, clientName, materialsMap, isCurrentWeek, ...actionHandlers }: OpListItemProps) {
+export function OpListItem({ order, clientName, materialsMap, operatorName, machineName, isCurrentWeek, ...actionHandlers }: OpListItemProps) {
     const statusInfo = statusClasses[order.status];
     const [isClient, setIsClient] = useState(false);
 
@@ -63,6 +65,8 @@ export function OpListItem({ order, clientName, materialsMap, isCurrentWeek, ...
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-sm mt-3 text-gray-600">
                 <div className="flex items-center gap-2"><User className="w-4 h-4 text-gray-400" /> <span>Cliente: <span className="font-medium text-gray-800">{clientName}</span></span></div>
+                <div className="flex items-center gap-2"><HardHat className="w-4 h-4 text-gray-400" /> <span>Operario: <span className="font-medium text-gray-800">{operatorName}</span></span></div>
+                <div className="flex items-center gap-2"><Cog className="w-4 h-4 text-gray-400" /> <span>Máquina: <span className="font-medium text-gray-800">{machineName}</span></span></div>
                 <div className="flex items-center gap-2"><Calendar className="w-4 h-4 text-gray-400" /> <span>Semana: <span className={cn("font-bold", isCurrentWeek ? 'text-indigo-600' : 'text-gray-800')}>{order.targetWeek}</span> {isCurrentWeek && '(Actual)'}</span></div>
             </div>
              <div className="flex items-start gap-2 mt-3 text-sm text-gray-600">

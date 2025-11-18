@@ -12,6 +12,19 @@ export interface Client {
   contact: string;
 }
 
+export interface Operator {
+  id: string;
+  name: string;
+  role: 'Operador de Horno' | 'Moldeador' | 'Acabado';
+}
+
+export interface Machine {
+  id: string;
+  name: string;
+  type: 'Horno de Inducción' | 'Moldeadora' | 'Granalladora';
+  status: 'Disponible' | 'En Uso' | 'En Mantenimiento';
+}
+
 export type ProductionOrderStatus = 'Pendiente' | 'En Proceso' | 'Crítico' | 'Terminada';
 
 export interface MaterialConsumption {
@@ -28,6 +41,8 @@ export interface ProductionOrder {
   materials: MaterialConsumption[];
   targetWeek: number;
   client_id: string;
+  operator_id?: string;
+  machine_id?: string;
   priority: 'Baja' | 'Media' | 'Alta';
   job_type: 'Normal Production' | 'Express/Small Job';
   start_time_est: number;

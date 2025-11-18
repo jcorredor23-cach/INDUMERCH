@@ -4,8 +4,8 @@
 import { useState, useMemo, useEffect } from 'react';
 import { getISOWeek } from 'date-fns';
 
-import type { Material, ProductionOrder, Incident, Client, Product } from '@/lib/types';
-import { initialMaterials, initialClients, initialProductionOrders, initialIncidents, products as allProducts } from '@/lib/data';
+import type { Material, ProductionOrder, Incident, Client, Product, Operator, Machine } from '@/lib/types';
+import { initialMaterials, initialClients, initialProductionOrders, initialIncidents, products as allProducts, initialOperators, initialMachines } from '@/lib/data';
 import { useToast } from "@/hooks/use-toast";
 import { MainLayout } from '@/components/main-layout';
 
@@ -20,6 +20,9 @@ export default function SteelFlowDashboard() {
   const [clients] = useState<Client[]>(initialClients);
   const [orders, setOrders] = useState<ProductionOrder[]>(initialProductionOrders);
   const [incidents, setIncidents] = useState<Incident[]>(initialIncidents);
+  const [operators] = useState<Operator[]>(initialOperators);
+  const [machines, setMachines] = useState<Machine[]>(initialMachines);
+
   const [lastOPNumber, setLastOPNumber] = useState(() => 
     Math.max(0, ...initialProductionOrders.map(op => parseInt(op.op_id.split('-')[1] || '0')))
   );
@@ -40,6 +43,20 @@ export default function SteelFlowDashboard() {
       return acc;
     }, {} as Record<string, Material>);
   }, [materials]);
+  
+  const operatorsMap = useMemo(() => {
+    return operators.reduce((acc, op) => {
+      acc[op.id] = op.name;
+      return acc;
+    }, {} as Record<string, string>);
+  }, [operators]);
+
+  const machinesMap = useMemo(() => {
+    return machines.reduce((acc, m) => {
+      acc[m.id] = m.name;
+      return acc;
+    }, {} as Record<string, string>);
+  }, [machines]);
 
   const activeOrders = useMemo(() => orders.filter(o => o.status !== 'Terminada'), [orders]);
   
@@ -194,6 +211,8 @@ export default function SteelFlowDashboard() {
               clients={clients}
               materials={materials}
               products={allProducts}
+              operators={operators}
+              machines={machines}
               onAddOrder={handleCreateOrder}
               onStartOrder={handleStartOrder}
               onCompleteOrder={handleCompleteOrder}

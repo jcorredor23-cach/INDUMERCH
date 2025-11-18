@@ -1,4 +1,4 @@
-import type { Material, Client, Product, ProductionOrder, Incident } from './types';
+import type { Material, Client, Product, ProductionOrder, Incident, Operator, Machine } from './types';
 import { getISOWeek } from 'date-fns';
 
 const CURRENT_WEEK = getISOWeek(new Date());
@@ -18,6 +18,21 @@ export const initialMaterials: Material[] = [
   { id: 'HierroGris', name: 'Arrabio/Hierro Gris', stock: 45, unit: 'ton', min_stock: 5 },
   { id: 'ArenaMoldeo', name: 'Arena de Moldeo', stock: 25, unit: 'm3', min_stock: 5 }
 ];
+
+export const initialOperators: Operator[] = [
+    { id: 'OP-01', name: 'Luis Hernandez', role: 'Operador de Horno' },
+    { id: 'OP-02', name: 'Ana Torres', role: 'Moldeador' },
+    { id: 'OP-03', name: 'Pedro Ramirez', role: 'Acabado' },
+    { id: 'OP-04', name: 'Carlos Martinez', role: 'Operador de Horno' },
+];
+
+export const initialMachines: Machine[] = [
+    { id: 'HI-01', name: 'Horno de Inducción 1', type: 'Horno de Inducción', status: 'Disponible' },
+    { id: 'HI-02', name: 'Horno de Inducción 2', type: 'Horno de Inducción', status: 'Disponible' },
+    { id: 'MOLD-01', name: 'Moldeadora Automática', type: 'Moldeadora', status: 'Disponible' },
+    { id: 'GRAN-01', name: 'Granalladora', type: 'Granalladora', status: 'En Mantenimiento' },
+];
+
 
 export const products: Product[] = [
     { group: 'Minería y Agregados', name: 'Martillo (Minería)' },
@@ -48,6 +63,8 @@ export const initialProductionOrders: ProductionOrder[] = [
     materials: [{ materialId: 'ChatarraAcero', consumption: 10 }],
     targetWeek: CURRENT_WEEK - 1,
     client_id: 'C-001-MIN',
+    operator_id: 'OP-01',
+    machine_id: 'HI-01',
     priority: 'Media',
     job_type: 'Normal Production',
     start_time_est: new Date(new Date().setDate(new Date().getDate() - 7)).getTime(),
@@ -66,6 +83,8 @@ export const initialProductionOrders: ProductionOrder[] = [
     materials: [{ materialId: 'AltoCromo', consumption: 500 }],
     targetWeek: CURRENT_WEEK,
     client_id: 'C-002-SID',
+    operator_id: 'OP-04',
+    machine_id: 'HI-02',
     priority: 'Alta',
     job_type: 'Normal Production',
     start_time_est: new Date(new Date().setDate(new Date().getDate() - 1)).getTime(),
@@ -98,6 +117,8 @@ export const initialProductionOrders: ProductionOrder[] = [
     materials: [{ materialId: 'Manganeso', consumption: 1500 }],
     targetWeek: CURRENT_WEEK,
     client_id: 'C-002-SID',
+    operator_id: 'OP-01',
+    machine_id: 'HI-01',
     priority: 'Alta',
     job_type: 'Express/Small Job',
     start_time_est: new Date(new Date().setDate(new Date().getDate() - 2)).getTime(),

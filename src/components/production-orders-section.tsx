@@ -5,7 +5,7 @@ import { useMemo } from 'react';
 import { ClipboardList, PauseCircle, PlayCircle, AlertCircle, CheckCircle } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import type { Client, Material, Product, ProductionOrder, ProductionOrderStatus } from '@/lib/types';
+import type { Client, Material, Product, ProductionOrder, ProductionOrderStatus, Operator, Machine } from '@/lib/types';
 import { getCurrentISOWeek } from '@/lib/utils';
 import { CreateOpModal } from './create-op-modal';
 import { OpListItem } from './op-list-item';
@@ -16,6 +16,8 @@ interface ProductionOrdersSectionProps {
   clients: Client[];
   materials: Material[];
   products: Product[];
+  operators: Operator[];
+  machines: Machine[];
   onAddOrder: (order: Omit<ProductionOrder, 'id' | 'op_id' | 'createdAt' | 'status'>) => void;
   onStartOrder: (id: string) => void;
   onCompleteOrder: (id: string) => void;
@@ -35,11 +37,13 @@ const KanbanColumn = ({ title, icon, children, colorClass }: { title: string; ic
 );
 
 
-export function ProductionOrdersSection({ orders, clients, materials, products, ...handlers }: ProductionOrdersSectionProps) {
+export function ProductionOrdersSection({ orders, clients, materials, products, operators, machines, ...handlers }: ProductionOrdersSectionProps) {
   const currentWeek = getCurrentISOWeek();
 
   const clientsMap = useMemo(() => Object.fromEntries(clients.map(c => [c.id, c.name])), [clients]);
   const materialsMap = useMemo(() => Object.fromEntries(materials.map(m => [m.id, m])), [materials]);
+  const operatorsMap = useMemo(() => Object.fromEntries(operators.map(o => [o.id, o.name])), [operators]);
+  const machinesMap = useMemo(() => Object.fromEntries(machines.map(m => [m.id, m.name])), [machines]);
 
   const ordersByStatus = useMemo(() => {
     return orders.reduce((acc, order) => {
@@ -66,6 +70,8 @@ export function ProductionOrdersSection({ orders, clients, materials, products, 
             order={order} 
             clientName={clientsMap[order.client_id] || order.client_id}
             materialsMap={materialsMap}
+            operatorName={order.operator_id ? operatorsMap[order.operator_id] : 'N/A'}
+            machineName={order.machine_id ? machinesMap[order.machine_id] : 'N/A'}
             {...actionHandlers}
         />
       ));
@@ -79,7 +85,7 @@ export function ProductionOrdersSection({ orders, clients, materials, products, 
                 <ClipboardList className="w-5 h-5 mr-2 text-slate-500" />
                 Órdenes de Colada (OP)
             </CardTitle>
-            <CreateOpModal clients={clients} materials={materials} products={products} onAddOrder={handlers.onAddOrder} />
+            <CreateOpModal clients={clients} materials={materials} products={products} operators={operators} machines={machines} onAddOrder={handlers.onAddOrder} />
         </div>
       </CardHeader>
       <CardContent className="p-4 md:p-6">
@@ -100,6 +106,8 @@ export function ProductionOrdersSection({ orders, clients, materials, products, 
                     order={order}
                     clientName={clientsMap[order.client_id] || order.client_id}
                     materialsMap={materialsMap}
+                    operatorName={order.operator_id ? operatorsMap[order.operator_id] : 'N/A'}
+                    machineName={order.machine_id ? machinesMap[order.machine_id] : 'N/A'}
                     isCurrentWeek={order.targetWeek === currentWeek}
                     {...actionHandlers}
                   />

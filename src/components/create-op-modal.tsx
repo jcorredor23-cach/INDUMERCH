@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FilePlus, Plus, Trash2 } from "lucide-react";
-import type { Client, Material, Product, ProductionOrder, MaterialConsumption } from '@/lib/types';
+import type { Client, Material, Product, ProductionOrder, MaterialConsumption, Operator, Machine } from '@/lib/types';
 import { getCurrentISOWeek, getCurrentDateTimeLocal } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 
@@ -16,10 +16,12 @@ interface CreateOpModalProps {
   clients: Client[];
   materials: Material[];
   products: Product[];
+  operators: Operator[];
+  machines: Machine[];
   onAddOrder: (order: Omit<ProductionOrder, 'id' | 'op_id' | 'createdAt' | 'status'>) => void;
 }
 
-export function CreateOpModal({ clients, materials, products, onAddOrder }: CreateOpModalProps) {
+export function CreateOpModal({ clients, materials, products, operators, machines, onAddOrder }: CreateOpModalProps) {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
   
@@ -31,6 +33,8 @@ export function CreateOpModal({ clients, materials, products, onAddOrder }: Crea
   const [materialInputs, setMaterialInputs] = useState<MaterialConsumption[]>([{ materialId: materials[0]?.id || '', consumption: 0 }]);
   const [estStartTime, setEstStartTime] = useState('');
   const [estEndTime, setEstEndTime] = useState('');
+  const [operatorId, setOperatorId] = useState<string | undefined>();
+  const [machineId, setMachineId] = useState<string | undefined>();
 
   useEffect(() => {
     if (open) {
@@ -53,6 +57,8 @@ export function CreateOpModal({ clients, materials, products, onAddOrder }: Crea
     const newEndTime = new Date(Date.now() + 3 * 60 * 60 * 1000);
     newEndTime.setMinutes(newEndTime.getMinutes() - newEndTime.getTimezoneOffset());
     setEstEndTime(newEndTime.toISOString().slice(0, 16));
+    setOperatorId(undefined);
+    setMachineId(undefined);
   };
   
   const handleMaterialChange = (index: number, field: keyof MaterialConsumption, value: string | number) => {
@@ -110,6 +116,8 @@ export function CreateOpModal({ clients, materials, products, onAddOrder }: Crea
       start_time_est: startTimeMs,
       end_time_est: endTimeMs,
       qty: totalConsumption,
+      operator_id: operatorId,
+      machine_id: machineId,
     });
     
     setOpen(false);
@@ -187,6 +195,29 @@ export function CreateOpModal({ clients, materials, products, onAddOrder }: Crea
             <div>
                 <Label htmlFor="op-target-week">Semana Objetivo</Label>
                 <Input id="op-target-week" type="number" value={targetWeek} onChange={e => setTargetWeek(e.target.value)} min="1" max="53" />
+            </div>
+
+             <hr/>
+            <h4 className="text-base font-semibold text-gray-700">Asignación</h4>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                  <Label htmlFor="op-operator-select">Operario a Cargo</Label>
+                  <Select value={operatorId} onValueChange={setOperatorId}>
+                      <SelectTrigger id="op-operator-select"><SelectValue placeholder="-- Asignar Operario --" /></SelectTrigger>
+                      <SelectContent>
+                          {operators.map(op => <SelectItem key={op.id} value={op.id}>{op.name}</SelectItem>)}
+                      </SelectContent>
+                  </Select>
+              </div>
+              <div>
+                  <Label htmlFor="op-machine-select">Máquina a Utilizar</Label>
+                  <Select value={machineId} onValueChange={setMachineId}>
+                      <SelectTrigger id="op-machine-select"><SelectValue placeholder="-- Asignar Máquina --" /></SelectTrigger>
+                      <SelectContent>
+                          {machines.filter(m => m.status === 'Disponible').map(m => <SelectItem key={m.id} value={m.id}>{m.name}</SelectItem>)}
+                      </SelectContent>
+                  </Select>
+              </div>
             </div>
 
             <hr/>
