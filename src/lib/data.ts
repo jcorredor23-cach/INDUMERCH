@@ -1,4 +1,4 @@
-import type { Material, Client, Product, ProductionOrder, Incident, Operator, Machine } from './types';
+import type { Material, Client, Product, ProductionOrder, Incident, Operator, Machine, Provider } from './types';
 import { getISOWeek } from 'date-fns';
 
 const CURRENT_WEEK = getISOWeek(new Date());
@@ -144,4 +144,10 @@ export const initialIncidents: Incident[] = [
         op_id: 'COLADA-002',
         timestamp: new Date(new Date().setDate(new Date().getDate() - 1)).getTime() + 2 * 60 * 60 * 1000
     }
+];
+
+export const initialProviders: Provider[] = [
+  { id: 'prov-001', name: 'Servicios Industriales ABC', specialty: 'Maquinaria', contact_person: 'Carlos Rodriguez', phone: '310-123-4567', email: 'carlos.r@serviabc.com' },
+  { id: 'prov-002', name: 'Metales y Aleaciones S.A.', specialty: 'Materia Prima', contact_person: 'Lucia Fernandez', phone: '315-987-6543', email: 'lucia.f@metales.com' },
+  { id: 'prov-003', name: 'Mantenimiento Electromecánico R&R', specialty: 'Maquinaria', contact_person: 'Roberto Diaz', phone: '300-555-8899', email: 'roberto.d@electromecanica.co' }
 ];

@@ -215,6 +215,47 @@
         "email",
         "createdAt"
       ]
+    },
+    "Provider": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Provider",
+      "type": "object",
+      "description": "Represents a maintenance or material provider.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the provider."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the provider company."
+        },
+        "specialty": {
+          "type": "string",
+          "enum": ["Maquinaria", "Materia Prima", "Servicios Generales"],
+          "description": "Area of expertise for the provider."
+        },
+        "contact_person": {
+          "type": "string",
+          "description": "Name of the primary contact person."
+        },
+        "phone": {
+          "type": "string",
+          "description": "Contact phone number."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Contact email address."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "specialty",
+        "contact_person",
+        "phone"
+      ]
     }
   },
   "auth": {
@@ -273,6 +314,16 @@
             "$ref": "#/entities/Incident"
           },
           "description": "Stores incident data for the steel foundry, owned by a user."
+        }
+      },
+      {
+        "path": "users/{userId}/providers/{providerId}",
+        "definition": {
+          "entityName": "Provider",
+          "schema": {
+            "$ref": "#/entities/Provider"
+          },
+          "description": "Stores maintenance and material provider data, owned by a user."
         }
       }
     ]

@@ -67,4 +67,11 @@ export interface Product {
     name: string;
 }
 
-    
+export interface Provider {
+  id: string;
+  name: string;
+  specialty: 'Maquinaria' | 'Materia Prima' | 'Servicios Generales';
+  contact_person: string;
+  phone: string;
+  email?: string;
+}

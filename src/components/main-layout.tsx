@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, History, Package } from 'lucide-react';
+import { Home, History, Package, Wrench } from 'lucide-react';
 import {
   SidebarProvider,
   Sidebar,
@@ -65,6 +65,18 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
                 <Link href="/history">
                   <History />
                   <span>Historial</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                isActive={pathname === '/maintenance'}
+                tooltip="Mantenimiento"
+              >
+                <Link href="/maintenance">
+                  <Wrench />
+                  <span>Mantenimiento</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

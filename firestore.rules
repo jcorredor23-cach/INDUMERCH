@@ -135,5 +135,18 @@ service cloud.firestore {
       allow update: if isExistingOwner(userId);
       allow delete: if isExistingOwner(userId);
     }
+
+     /**
+     * @description Rules for provider documents.
+     * @path /artifacts/{appId}/users/{userId}/providers/{providerId}
+     * @principle Enforces document ownership for all operations.
+     */
+    match /artifacts/{appId}/users/{userId}/providers/{providerId} {
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId);
+      allow update: if isExistingOwner(userId);
+      allow delete: if isExistingOwner(userId);
+    }
   }
 }
