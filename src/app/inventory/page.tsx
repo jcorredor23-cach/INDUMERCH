@@ -12,17 +12,49 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AlertCircle, BrainCircuit } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { useToast } from '@/hooks/use-toast';
 
 export default function InventoryPage() {
   const [materials, setMaterials] = useState<Material[]>(initialMaterials);
-  const [orders, setOrders] = useState<ProductionOrder[]>(initialProductionOrders);
+  const [orders] = useState<ProductionOrder[]>(initialProductionOrders);
   const [predictions, setPredictions] = useState<PredictiveStockAlertsOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     setIsClient(true);
   }, []);
+  
+  const handleAddMaterial = (newMaterial: Omit<Material, 'id'>) => {
+    const newMaterialWithId: Material = {
+      ...newMaterial,
+      id: `mat_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
+    };
+    setMaterials(prev => [...prev, newMaterialWithId]);
+    toast({
+        title: "Material Añadido",
+        description: `Se ha añadido ${newMaterial.name} al inventario.`,
+    });
+  };
+
+  const handleUpdateMaterial = (updatedMaterial: Material) => {
+      setMaterials(prev => prev.map(m => m.id === updatedMaterial.id ? updatedMaterial : m));
+      toast({
+          title: "Material Actualizado",
+          description: `El stock de ${updatedMaterial.name} ha sido actualizado.`,
+      });
+  };
+
+  const handleDeleteMaterial = (materialId: string) => {
+      setMaterials(prev => prev.filter(m => m.id !== materialId));
+      toast({
+          title: "Material Eliminado",
+          description: "La materia prima ha sido eliminada del inventario.",
+          variant: 'destructive'
+      });
+  };
+
 
   const handleRunPrediction = async () => {
     setIsLoading(true);
@@ -59,7 +91,13 @@ export default function InventoryPage() {
       <main className="max-w-screen-xl mx-auto p-4 lg:p-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="md:col-span-2">
-                <MaterialsSection materials={materials} predictions={predictions} />
+                <MaterialsSection 
+                    materials={materials} 
+                    predictions={predictions}
+                    onAddMaterial={handleAddMaterial}
+                    onUpdateMaterial={handleUpdateMaterial}
+                    onDeleteMaterial={handleDeleteMaterial}
+                />
             </div>
              <div className="md:col-span-1">
                 <Card className="shadow-lg rounded-xl bg-indigo-50 border-indigo-200">
