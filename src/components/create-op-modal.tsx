@@ -36,6 +36,8 @@ export function CreateOpModal({ clients, materials, products, operators, machine
   const [operatorId, setOperatorId] = useState<string | undefined>();
   const [machineId, setMachineId] = useState<string | undefined>();
 
+  const materialsMap = new Map(materials.map(m => [m.id, m]));
+
   useEffect(() => {
     if (open) {
       const defaultStartTime = getCurrentDateTimeLocal();
@@ -223,20 +225,29 @@ export function CreateOpModal({ clients, materials, products, operators, machine
             <hr/>
             <h4 className="text-base font-semibold text-gray-700">Materia Prima a Consumir</h4>
             <div className="space-y-3">
-              {materialInputs.map((input, index) => (
-                <div key={index} className="flex items-center space-x-2">
-                  <Select value={input.materialId} onValueChange={(v) => handleMaterialChange(index, 'materialId', v)}>
-                      <SelectTrigger className="w-1/2"><SelectValue placeholder="Seleccione material"/></SelectTrigger>
-                      <SelectContent>
-                          {materials.map(mp => <SelectItem key={mp.id} value={mp.id}>{mp.name} ({mp.unit})</SelectItem>)}
-                      </SelectContent>
-                  </Select>
-                  <Input type="number" value={input.consumption} onChange={e => handleMaterialChange(index, 'consumption', e.target.value)} min="0" placeholder="Cantidad" className="w-1/2" />
-                   <Button variant="ghost" size="icon" onClick={() => removeMaterialInput(index)} className="text-red-500 hover:bg-red-100 h-8 w-8">
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
+              {materialInputs.map((input, index) => {
+                const selectedMaterial = materialsMap.get(input.materialId);
+                return (
+                <div key={index} className="grid grid-cols-12 items-center gap-2">
+                  <div className="col-span-6">
+                    <Select value={input.materialId} onValueChange={(v) => handleMaterialChange(index, 'materialId', v)}>
+                        <SelectTrigger><SelectValue placeholder="Seleccione material"/></SelectTrigger>
+                        <SelectContent>
+                            {materials.map(mp => <SelectItem key={mp.id} value={mp.id}>{mp.name}</SelectItem>)}
+                        </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="col-span-5 flex items-center">
+                    <Input type="number" value={input.consumption} onChange={e => handleMaterialChange(index, 'consumption', e.target.value)} min="0" placeholder="Cantidad" />
+                     {selectedMaterial && <span className="ml-2 text-sm text-gray-600 font-medium">{selectedMaterial.unit}</span>}
+                  </div>
+                   <div className="col-span-1">
+                    <Button variant="ghost" size="icon" onClick={() => removeMaterialInput(index)} className="text-red-500 hover:bg-red-100 h-8 w-8">
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </div>
-              ))}
+              )})}
               {materialInputs.length < 4 && (
                 <Button onClick={addMaterialInput} variant="outline" size="sm" className="w-full mt-2">
                   <Plus className="w-4 h-4 mr-2" /> Añadir Otro Material
@@ -264,3 +275,5 @@ export function CreateOpModal({ clients, materials, products, operators, machine
     </Dialog>
   );
 }
+
+    
