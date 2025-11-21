@@ -124,7 +124,7 @@ export default function InventoryPage() {
                                             const material = materials.find(m => m.id === p.materialId);
                                             return (
                                                 <li key={p.materialId} className="text-sm">
-                                                    <strong>{material?.name}:</strong> Se proyecta un déficit de <strong>{p.amountShort?.toLocaleString() ?? 0} {material?.unit}</strong>.
+                                                    <strong>{material?.name}:</strong> Se proyecta un déficit de <strong>{p.amountShort?.toLocaleString() ?? 0} kg</strong>.
                                                 </li>
                                             )
                                         })}

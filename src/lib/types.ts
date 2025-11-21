@@ -2,7 +2,7 @@ export interface Material {
   id: string;
   name: string;
   stock: number;
-  unit: 'ton' | 'kg' | 'm3';
+  unit: 'kg';
   min_stock: number;
 }
 

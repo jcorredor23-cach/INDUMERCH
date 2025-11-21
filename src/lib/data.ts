@@ -11,12 +11,12 @@ export const initialClients: Client[] = [
 ];
 
 export const initialMaterials: Material[] = [
-  { id: 'ChatarraAcero', name: 'Chatarra de Acero (Carga)', stock: 58, unit: 'ton', min_stock: 10 },
+  { id: 'ChatarraAcero', name: 'Chatarra de Acero (Carga)', stock: 58000, unit: 'kg', min_stock: 10000 },
   { id: 'Manganeso', name: 'Acero al Manganeso (FeMn)', stock: 15000, unit: 'kg', min_stock: 500 },
   { id: 'AltoCromo', name: 'Acero al Alto Cromo (FeCr)', stock: 8000, unit: 'kg', min_stock: 400 },
   { id: 'Inoxidable', name: 'Acero Inoxidable (Chatarra)', stock: 15000, unit: 'kg', min_stock: 1000 },
-  { id: 'HierroGris', name: 'Arrabio/Hierro Gris', stock: 45, unit: 'ton', min_stock: 5 },
-  { id: 'ArenaMoldeo', name: 'Arena de Moldeo', stock: 25, unit: 'm3', min_stock: 5 }
+  { id: 'HierroGris', name: 'Arrabio/Hierro Gris', stock: 45000, unit: 'kg', min_stock: 5000 },
+  { id: 'ArenaMoldeo', name: 'Arena de Moldeo', stock: 40000, unit: 'kg', min_stock: 8000 }
 ];
 
 export const initialOperators: Operator[] = [
@@ -60,7 +60,7 @@ export const initialProductionOrders: ProductionOrder[] = [
     status: 'Terminada',
     product: 'Mandíbula (Minería)',
     qty: 50,
-    materials: [{ materialId: 'ChatarraAcero', consumption: 10 }],
+    materials: [{ materialId: 'ChatarraAcero', consumption: 10000 }],
     targetWeek: CURRENT_WEEK - 1,
     client_id: 'C-001-MIN',
     operator_id: 'OP-01',
@@ -99,7 +99,7 @@ export const initialProductionOrders: ProductionOrder[] = [
     status: 'Pendiente',
     product: 'Brazo Mezclador (Construcción)',
     qty: 20,
-    materials: [{ materialId: 'HierroGris', consumption: 2 }],
+    materials: [{ materialId: 'HierroGris', consumption: 2000 }],
     targetWeek: CURRENT_WEEK,
     client_id: 'C-003-CON',
     priority: 'Media',

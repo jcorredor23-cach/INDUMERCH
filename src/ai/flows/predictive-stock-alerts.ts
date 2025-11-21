@@ -60,7 +60,7 @@ Determine if a shortage is predicted based on whether the predicted stock level 
 
 Materials:
 {{#each materials}}
-- ID: {{id}}, Name: {{name}}, Stock: {{stock}} {{unit}}, Minimum Stock: {{min_stock}} {{unit}}
+- ID: {{id}}, Name: {{name}}, Stock: {{stock}} kg, Minimum Stock: {{min_stock}} kg
 {{/each}}
 
 Production Orders (Current Week: {{currentWeek}}):

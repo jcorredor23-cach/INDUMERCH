@@ -89,7 +89,7 @@ export function MaterialsSection({ materials, predictions, onAddMaterial, onUpda
                          <TooltipTrigger asChild>
                            <div className={`flex items-center text-xs font-bold ${isPredictedShortage ? 'text-red-600' : 'text-green-600'}`}>
                               {isPredictedShortage ? <TrendingDown className="h-4 w-4 mr-1" /> : <TrendingUp className="h-4 w-4 mr-1" />}
-                              <span>Pred: {prediction.predictedStock.toLocaleString()} {mp.unit === 'ton' ? 'Ton' : mp.unit}</span>
+                              <span>Pred: {prediction.predictedStock.toLocaleString()} {mp.unit}</span>
                            </div>
                          </TooltipTrigger>
                          <TooltipContent>
@@ -101,7 +101,7 @@ export function MaterialsSection({ materials, predictions, onAddMaterial, onUpda
                   
                   <div>
                     <span className="text-lg font-bold">{mp.stock.toLocaleString()}</span>
-                    <span className="text-sm ml-1">{mp.unit === 'ton' ? 'Ton' : mp.unit}</span>
+                    <span className="text-sm ml-1">{mp.unit}</span>
                     {(lowStock || isPredictedShortage) && 
                       <span className={`ml-2 text-xs font-bold px-2 py-1 ${isPredictedShortage ? 'bg-red-600' : 'bg-red-500'} text-white rounded-full inline-flex items-center`}>
                         <AlertTriangle className="h-3 w-3 mr-1" />

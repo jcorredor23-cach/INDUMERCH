@@ -23,7 +23,6 @@ export function MaterialFormModal({ isOpen, onClose, onSave, material }: Materia
   
   const [name, setName] = useState('');
   const [stock, setStock] = useState<number | string>('');
-  const [unit, setUnit] = useState<Material['unit']>('ton');
   const [minStock, setMinStock] = useState<number | string>('');
 
   useEffect(() => {
@@ -31,13 +30,11 @@ export function MaterialFormModal({ isOpen, onClose, onSave, material }: Materia
       if (material) {
         setName(material.name);
         setStock(material.stock);
-        setUnit(material.unit);
         setMinStock(material.min_stock);
       } else {
         // Reset form for new material
         setName('');
         setStock('');
-        setUnit('ton');
         setMinStock('');
       }
     }
@@ -59,7 +56,7 @@ export function MaterialFormModal({ isOpen, onClose, onSave, material }: Materia
     const materialData = {
       name,
       stock: stockNum,
-      unit,
+      unit: 'kg' as const,
       min_stock: minStockNum,
     };
 
@@ -87,25 +84,24 @@ export function MaterialFormModal({ isOpen, onClose, onSave, material }: Materia
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Label htmlFor="material-stock">Stock Actual</Label>
-              <Input id="material-stock" type="number" value={stock} onChange={e => setStock(e.target.value)} placeholder="0" min="0" />
+              <div className="flex items-center">
+                <Input id="material-stock" type="number" value={stock} onChange={e => setStock(e.target.value)} placeholder="0" min="0" className="rounded-r-none" />
+                <span className="inline-flex items-center px-3 text-sm text-gray-500 bg-gray-100 border border-l-0 border-gray-300 rounded-r-md h-10">
+                  kg
+                </span>
+              </div>
             </div>
              <div>
-              <Label htmlFor="material-unit">Unidad</Label>
-              <Select value={unit} onValueChange={(v) => setUnit(v as Material['unit'])}>
-                <SelectTrigger id="material-unit"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="ton">ton (Toneladas)</SelectItem>
-                  <SelectItem value="kg">kg (Kilogramos)</SelectItem>
-                  <SelectItem value="m3">m³ (Metros cúbicos)</SelectItem>
-                </SelectContent>
-              </Select>
+              <Label htmlFor="material-min-stock">Stock Mínimo</Label>
+              <div className="flex items-center">
+                <Input id="material-min-stock" type="number" value={minStock} onChange={e => setMinStock(e.target.value)} placeholder="0" min="0" className="rounded-r-none" />
+                 <span className="inline-flex items-center px-3 text-sm text-gray-500 bg-gray-100 border border-l-0 border-gray-300 rounded-r-md h-10">
+                  kg
+                </span>
+              </div>
             </div>
           </div>
-          <div>
-            <Label htmlFor="material-min-stock">Stock Mínimo Requerido</Label>
-            <Input id="material-min-stock" type="number" value={minStock} onChange={e => setMinStock(e.target.value)} placeholder="0" min="0" />
-            <p className="text-xs text-gray-500 mt-1">El sistema alertará cuando el stock baje de este nivel.</p>
-          </div>
+           <p className="text-xs text-gray-500 mt-1">El sistema alertará cuando el stock baje del nivel mínimo.</p>
         </div>
         <DialogFooter>
           <Button onClick={onClose} variant="outline">Cancelar</Button>

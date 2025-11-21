@@ -51,8 +51,7 @@ export function OpListItem({ order, clientName, materialsMap, operatorName, mach
     }
 
     const consumptionString = order.materials.map(m => {
-        const material = materialsMap[m.materialId];
-        return `${m.consumption} ${material?.unit || 'u.'} de ${material?.name || m.materialId}`;
+        return `${m.consumption} kg de ${materialsMap[m.materialId]?.name || m.materialId}`;
     }).join(', ');
 
     return (

@@ -32,8 +32,7 @@ export function OpKanbanCard({ order, clientName, materialsMap, operatorName, ma
                              order.status === 'Crítico' ? 'border-red-600' : 'border-indigo-500';
 
     const consumptionString = order.materials.map(m => {
-        const material = materialsMap[m.materialId];
-        return `${m.consumption} ${material?.unit || 'u.'} ${material?.name || m.materialId}`;
+        return `${m.consumption} kg de ${materialsMap[m.materialId]?.name || m.materialId}`;
     }).join(', ');
 
     return (
