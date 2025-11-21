@@ -27,10 +27,16 @@ export const initialOperators: Operator[] = [
 ];
 
 export const initialMachines: Machine[] = [
-    { id: 'HI-01', name: 'Horno de Inducción 1', type: 'Horno de Inducción', status: 'Disponible' },
-    { id: 'HI-02', name: 'Horno de Inducción 2', type: 'Horno de Inducción', status: 'Disponible' },
-    { id: 'MOLD-01', name: 'Moldeadora Automática', type: 'Moldeadora', status: 'Disponible' },
-    { id: 'GRAN-01', name: 'Granalladora', type: 'Granalladora', status: 'En Mantenimiento' },
+    { id: 'HI-01', name: 'Horno de Inducción 1 (5 Ton)', type: 'Horno de Inducción', status: 'Disponible' },
+    { id: 'HI-02', name: 'Horno de Inducción 2 (3 Ton)', type: 'Horno de Inducción', status: 'Disponible' },
+    { id: 'MOLD-01', name: 'Moldeadora Automática IMF', type: 'Moldeadora', status: 'Disponible' },
+    { id: 'GRAN-01', name: 'Granalladora de Mesa', type: 'Granalladora', status: 'En Mantenimiento' },
+    { id: 'PG-01', name: 'Puente Grúa Principal (10 Ton)', type: 'Puente Grúa', status: 'Disponible' },
+    { id: 'PG-02', name: 'Puente Grúa Auxiliar (5 Ton)', type: 'Puente Grúa', status: 'Disponible' },
+    { id: 'SAND-01', name: 'Mezcladora de Arena No-Bake', type: 'Mezcladora de Arena', status: 'Disponible' },
+    { id: 'TT-01', name: 'Horno de Tratamiento Térmico', type: 'Horno de Tratamiento Térmico', status: 'Disponible' },
+    { id: 'REB-01', name: 'Cabina de Rebabado y Esmeril', type: 'Rebabadora / Esmeril', status: 'Disponible' },
+    { id: 'CNC-T-01', name: 'Torno CNC Haas', type: 'Torno CNC', status: 'En Uso' },
 ];
 
 

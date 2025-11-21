@@ -1,3 +1,4 @@
+
 export interface Material {
   id: string;
   name: string;
@@ -21,7 +22,7 @@ export interface Operator {
 export interface Machine {
   id: string;
   name: string;
-  type: 'Horno de Inducción' | 'Moldeadora' | 'Granalladora';
+  type: 'Horno de Inducción' | 'Moldeadora' | 'Granalladora' | 'Puente Grúa' | 'Mezcladora de Arena' | 'Rebabadora / Esmeril' | 'Horno de Tratamiento Térmico' | 'Sierra de Corte' | 'Torno CNC' | 'Fresadora CNC';
   status: 'Disponible' | 'En Uso' | 'En Mantenimiento';
 }
 
