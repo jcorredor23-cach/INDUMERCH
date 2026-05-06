@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -19,7 +20,7 @@ const ExceptionImpactAnalysisOutputSchema = z.object({
   impactSummary: z
     .string()
     .describe('A summary of the impact of the exception on production.'),
-  impactedArea: z.string().describe('The area most impacted by the incident (e.g., Tiempos, Costos, Calidad).'),
+  impactedArea: z.string().describe('The area most impacted by the incident (e.g., Tiempos, Costos, Calidad, Seguridad).'),
   suggestedActions: z.string().describe('Suggested actions to mitigate the impact.'),
 });
 export type ExceptionImpactAnalysisOutput = z.infer<typeof ExceptionImpactAnalysisOutputSchema>;
@@ -34,7 +35,12 @@ const prompt = ai.definePrompt({
   Incidente: {{{incidentDescription}}}
   Detalles de la Orden: {{{opDetails}}}
 
-  Proporciona un análisis crítico y sugiere pasos concretos para mitigar el retraso o el desperdicio.`,
+  Debes proporcionar:
+  1. Un resumen del impacto (impactSummary).
+  2. El área más afectada (impactedArea): Tiempos, Costos, Calidad o Seguridad.
+  3. Acciones sugeridas (suggestedActions): Pasos concretos para mitigar el retraso o el desperdicio.
+
+  Genera tu respuesta basándote estrictamente en estos campos del esquema de salida.`,
 });
 
 export async function exceptionImpactAnalysis(

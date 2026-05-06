@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -11,7 +12,6 @@ import type { Incident, ProductionOrder } from '@/lib/types';
 import { formatDateTime } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { exceptionImpactAnalysis, ExceptionImpactAnalysisOutput } from '@/ai/flows/exception-impact-analysis';
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card, CardContent } from "@/components/ui/card";
 
 interface IncidentsSectionProps {
@@ -141,6 +141,7 @@ export function IncidentsSection({ incidents, orders, clients, onAddIncident }: 
   
   const handleAnalyze = async (incident: Incident, order: ProductionOrder) => {
     setIsLoadingAnalysis(true);
+    setAnalysisResult(null);
     try {
         const opDetails = `
             Producto: ${order.product}, 
@@ -156,7 +157,7 @@ export function IncidentsSection({ incidents, orders, clients, onAddIncident }: 
         setAnalysisResult({ id: incident.id, data: result });
         toast({ title: "Análisis Completado", description: "La IA ha procesado el impacto de la novedad." });
     } catch (e) {
-        toast({ title: "Error de IA", description: "No se pudo completar el análisis.", variant: "destructive" });
+        toast({ title: "Error de IA", description: "No se pudo completar el análisis. Por favor intente de nuevo.", variant: "destructive" });
         console.error("Analysis failed:", e);
     } finally {
         setIsLoadingAnalysis(false);
