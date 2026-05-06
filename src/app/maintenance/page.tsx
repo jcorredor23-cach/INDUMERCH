@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MainLayout } from '@/components/main-layout';
 import { initialProviders } from '@/lib/data';
 import type { Provider } from '@/lib/types';
@@ -32,8 +32,13 @@ export default function MaintenancePage() {
   const [providers, setProviders] = useState<Provider[]>(initialProviders);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState<Provider | undefined>(undefined);
+  const [isClient, setIsClient] = useState(false);
   const { toast } = useToast();
   
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   const handleOpenModal = (provider?: Provider) => {
     setSelectedProvider(provider);
     setIsModalOpen(true);
@@ -46,11 +51,9 @@ export default function MaintenancePage() {
 
   const handleSaveProvider = (providerData: Omit<Provider, 'id'> | Provider) => {
     if ('id' in providerData) {
-      // Update existing provider
       setProviders(prev => prev.map(p => p.id === providerData.id ? providerData : p));
       toast({ title: 'Proveedor Actualizado', description: `Los datos de ${providerData.name} han sido actualizados.` });
     } else {
-      // Add new provider
       const newProvider: Provider = {
         ...providerData,
         id: `prov_${Date.now()}`
@@ -67,6 +70,8 @@ export default function MaintenancePage() {
     toast({ title: 'Proveedor Eliminado', description: `${providerName} ha sido eliminado.`, variant: 'destructive' });
   };
   
+  if (!isClient) return null;
+
   return (
     <MainLayout>
       <main className="max-w-screen-xl mx-auto p-4 lg:p-8">

@@ -33,8 +33,8 @@ export function CreateOpModal({ clients, materials, products, operators, machine
   const [materialInputs, setMaterialInputs] = useState<MaterialConsumption[]>([{ materialId: materials[0]?.id || '', consumption: 0 }]);
   const [estStartTime, setEstStartTime] = useState('');
   const [estEndTime, setEstEndTime] = useState('');
-  const [operatorId, setOperatorId] = useState<string | undefined>();
-  const [machineId, setMachineId] = useState<string | undefined>();
+  const [operatorId, setOperatorId] = useState<string>('unassigned');
+  const [machineId, setMachineId] = useState<string>('unassigned');
 
   const materialsMap = new Map(materials.map(m => [m.id, m]));
 
@@ -59,8 +59,8 @@ export function CreateOpModal({ clients, materials, products, operators, machine
     const newEndTime = new Date(Date.now() + 3 * 60 * 60 * 1000);
     newEndTime.setMinutes(newEndTime.getMinutes() - newEndTime.getTimezoneOffset());
     setEstEndTime(newEndTime.toISOString().slice(0, 16));
-    setOperatorId(undefined);
-    setMachineId(undefined);
+    setOperatorId('unassigned');
+    setMachineId('unassigned');
   };
   
   const handleMaterialChange = (index: number, field: keyof MaterialConsumption, value: string | number) => {
@@ -118,8 +118,8 @@ export function CreateOpModal({ clients, materials, products, operators, machine
       start_time_est: startTimeMs,
       end_time_est: endTimeMs,
       qty: totalConsumption,
-      operator_id: operatorId,
-      machine_id: machineId,
+      operator_id: operatorId === 'unassigned' ? undefined : operatorId,
+      machine_id: machineId === 'unassigned' ? undefined : machineId,
     });
     
     setOpen(false);
@@ -207,6 +207,7 @@ export function CreateOpModal({ clients, materials, products, operators, machine
                   <Select value={operatorId} onValueChange={setOperatorId}>
                       <SelectTrigger id="op-operator-select"><SelectValue placeholder="-- Asignar Operario --" /></SelectTrigger>
                       <SelectContent>
+                          <SelectItem value="unassigned">Sin asignar</SelectItem>
                           {operators.map(op => <SelectItem key={op.id} value={op.id}>{op.name}</SelectItem>)}
                       </SelectContent>
                   </Select>
@@ -216,6 +217,7 @@ export function CreateOpModal({ clients, materials, products, operators, machine
                   <Select value={machineId} onValueChange={setMachineId}>
                       <SelectTrigger id="op-machine-select"><SelectValue placeholder="-- Asignar Máquina --" /></SelectTrigger>
                       <SelectContent>
+                          <SelectItem value="unassigned">Sin asignar</SelectItem>
                           {machines.filter(m => m.status === 'Disponible').map(m => <SelectItem key={m.id} value={m.id}>{m.name}</SelectItem>)}
                       </SelectContent>
                   </Select>
@@ -226,7 +228,6 @@ export function CreateOpModal({ clients, materials, products, operators, machine
             <h4 className="text-base font-semibold text-gray-700">Materia Prima a Consumir</h4>
             <div className="space-y-3">
               {materialInputs.map((input, index) => {
-                const selectedMaterial = materialsMap.get(input.materialId);
                 return (
                 <div key={index} className="grid grid-cols-12 items-center gap-2">
                   <div className="col-span-6">
@@ -239,7 +240,7 @@ export function CreateOpModal({ clients, materials, products, operators, machine
                   </div>
                   <div className="col-span-5 flex items-center">
                     <Input type="number" value={input.consumption} onChange={e => handleMaterialChange(index, 'consumption', e.target.value)} min="0" placeholder="Cantidad" />
-                     {selectedMaterial && <span className="ml-2 text-sm text-gray-600 font-medium">{selectedMaterial.unit}</span>}
+                     <span className="ml-2 text-sm text-gray-600 font-medium">kg</span>
                   </div>
                    <div className="col-span-1">
                     <Button variant="ghost" size="icon" onClick={() => removeMaterialInput(index)} className="text-red-500 hover:bg-red-100 h-8 w-8">
@@ -275,5 +276,3 @@ export function CreateOpModal({ clients, materials, products, operators, machine
     </Dialog>
   );
 }
-
-    

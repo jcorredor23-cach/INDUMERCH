@@ -2,12 +2,8 @@
 "use client";
 
 import { useState, useMemo, useEffect } from 'react';
-import Link from 'next/link';
-import { initialClients, initialProductionOrders, initialMaterials } from '@/lib/data';
-import type { Client, ProductionOrder, Material } from '@/lib/types';
-import { OpListItem } from '@/components/op-list-item';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import type { Client, ProductionOrder } from '@/lib/types';
+import { initialClients, initialProductionOrders } from '@/lib/data';
 import {
   Table,
   TableHeader,
@@ -17,9 +13,7 @@ import {
   TableCell,
 } from '@/components/ui/table';
 import { formatDateTime } from '@/lib/utils';
-import { Badge } from '@/components/ui/badge';
 import { MainLayout } from '@/components/main-layout';
-
 
 export default function HistoryPage() {
   const [orders] = useState<ProductionOrder[]>(initialProductionOrders);
@@ -38,6 +32,8 @@ export default function HistoryPage() {
       return acc;
     }, {} as Record<string, string>);
   }, [clients]);
+
+  if (!isClient) return null;
 
   return (
     <MainLayout>
@@ -64,7 +60,7 @@ export default function HistoryPage() {
                     <TableCell className="font-medium">{order.op_id}</TableCell>
                     <TableCell>{order.product}</TableCell>
                     <TableCell>{clientsMap[order.client_id]}</TableCell>
-                    <TableCell>{isClient ? formatDateTime(order.end_time_real) : '...'}</TableCell>
+                    <TableCell>{formatDateTime(order.end_time_real)}</TableCell>
                     <TableCell>{order.qty} kg</TableCell>
                   </TableRow>
                 ))}

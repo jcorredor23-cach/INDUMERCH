@@ -1,3 +1,4 @@
+
 import type { Material, Client, Product, ProductionOrder, Incident, Operator, Machine, Provider } from './types';
 import { getISOWeek } from 'date-fns';
 
@@ -36,9 +37,10 @@ export const initialMachines: Machine[] = [
     { id: 'SAND-01', name: 'Mezcladora de Arena No-Bake', type: 'Mezcladora de Arena', status: 'Disponible' },
     { id: 'TT-01', name: 'Horno de Tratamiento Térmico', type: 'Horno de Tratamiento Térmico', status: 'Disponible' },
     { id: 'REB-01', name: 'Cabina de Rebabado y Esmeril', type: 'Rebabadora / Esmeril', status: 'Disponible' },
-    { id: 'CNC-T-01', name: 'Torno CNC Haas', type: 'Torno CNC', status: 'En Uso' },
+    { id: 'CNC-T-01', name: 'Torno CNC Haas', type: 'Torno CNC', status: 'Disponible' },
+    { id: 'FRES-01', name: 'Fresadora Universal', type: 'Fresadora CNC', status: 'Disponible' },
+    { id: 'SIER-01', name: 'Sierra de Cinta Industrial', type: 'Sierra de Corte', status: 'Disponible' }
 ];
-
 
 export const products: Product[] = [
     { group: 'Minería y Agregados', name: 'Martillo (Minería)' },
@@ -73,11 +75,11 @@ export const initialProductionOrders: ProductionOrder[] = [
     machine_id: 'HI-01',
     priority: 'Media',
     job_type: 'Normal Production',
-    start_time_est: new Date(new Date().setDate(new Date().getDate() - 7)).getTime(),
-    end_time_est: new Date(new Date().setDate(new Date().getDate() - 7)).getTime() + 4 * 60 * 60 * 1000,
-    start_time_real: new Date(new Date().setDate(new Date().getDate() - 7)).getTime() + 15 * 60 * 1000,
-    end_time_real: new Date(new Date().setDate(new Date().getDate() - 7)).getTime() + 4 * 60 * 60 * 1000 + 30 * 60 * 1000,
-    createdAt: new Date(new Date().setDate(new Date().getDate() - 8)).getTime(),
+    start_time_est: Date.now() - (7 * 24 * 60 * 60 * 1000),
+    end_time_est: Date.now() - (7 * 24 * 60 * 60 * 1000) + 4 * 60 * 60 * 1000,
+    start_time_real: Date.now() - (7 * 24 * 60 * 60 * 1000) + 15 * 60 * 1000,
+    end_time_real: Date.now() - (7 * 24 * 60 * 60 * 1000) + 4 * 60 * 60 * 1000 + 30 * 60 * 1000,
+    createdAt: Date.now() - (8 * 24 * 60 * 60 * 1000),
     completionWeek: CURRENT_WEEK - 1,
   },
   {
@@ -93,10 +95,10 @@ export const initialProductionOrders: ProductionOrder[] = [
     machine_id: 'HI-02',
     priority: 'Alta',
     job_type: 'Normal Production',
-    start_time_est: new Date(new Date().setDate(new Date().getDate() - 1)).getTime(),
-    end_time_est: new Date().getTime() + 2 * 60 * 60 * 1000,
-    start_time_real: new Date(new Date().setDate(new Date().getDate() - 1)).getTime() + 5 * 60 * 1000,
-    createdAt: new Date(new Date().setDate(new Date().getDate() - 2)).getTime(),
+    start_time_est: Date.now() - (1 * 24 * 60 * 60 * 1000),
+    end_time_est: Date.now() + 2 * 60 * 60 * 1000,
+    start_time_real: Date.now() - (1 * 24 * 60 * 60 * 1000) + 5 * 60 * 1000,
+    createdAt: Date.now() - (2 * 24 * 60 * 60 * 1000),
     startWeek: CURRENT_WEEK,
   },
   {
@@ -110,9 +112,9 @@ export const initialProductionOrders: ProductionOrder[] = [
     client_id: 'C-003-CON',
     priority: 'Media',
     job_type: 'Normal Production',
-    start_time_est: new Date().getTime() + 1 * 60 * 60 * 1000,
-    end_time_est: new Date().getTime() + 5 * 60 * 60 * 1000,
-    createdAt: new Date(new Date().setDate(new Date().getDate() - 1)).getTime(),
+    start_time_est: Date.now() + 1 * 60 * 60 * 1000,
+    end_time_est: Date.now() + 5 * 60 * 60 * 1000,
+    createdAt: Date.now() - (1 * 24 * 60 * 60 * 1000),
   },
   {
     id: 'doc_4',
@@ -127,10 +129,10 @@ export const initialProductionOrders: ProductionOrder[] = [
     machine_id: 'HI-01',
     priority: 'Alta',
     job_type: 'Express/Small Job',
-    start_time_est: new Date(new Date().setDate(new Date().getDate() - 2)).getTime(),
-    end_time_est: new Date(new Date().setDate(new Date().getDate() - 1)).getTime(),
-    start_time_real: new Date(new Date().setDate(new Date().getDate() - 2)).getTime(),
-    createdAt: new Date(new Date().setDate(new Date().getDate() - 3)).getTime(),
+    start_time_est: Date.now() - (2 * 24 * 60 * 60 * 1000),
+    end_time_est: Date.now() - (1 * 24 * 60 * 60 * 1000),
+    start_time_real: Date.now() - (2 * 24 * 60 * 60 * 1000),
+    createdAt: Date.now() - (3 * 24 * 60 * 60 * 1000),
     startWeek: CURRENT_WEEK,
   },
 ];
@@ -141,14 +143,14 @@ export const initialIncidents: Incident[] = [
         type: 'Falla Equipo',
         description: 'Horno de inducción principal sobrecalentado. Se detuvo la operación por 2 horas.',
         op_id: 'COLADA-004',
-        timestamp: new Date(new Date().setDate(new Date().getDate() - 1)).getTime()
+        timestamp: Date.now() - (1 * 24 * 60 * 60 * 1000)
     },
     {
         id: 'inc_2',
         type: 'Calidad',
         description: 'Muestra de la primera colada del día arrojó composición fuera de especificaciones. Se requiere ajuste de aleación.',
         op_id: 'COLADA-002',
-        timestamp: new Date(new Date().setDate(new Date().getDate() - 1)).getTime() + 2 * 60 * 60 * 1000
+        timestamp: Date.now() - (1 * 24 * 60 * 60 * 1000) + 2 * 60 * 60 * 1000
     }
 ];
 

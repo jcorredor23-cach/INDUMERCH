@@ -28,21 +28,25 @@ function LogIncidentModal({ orders, clients, onAddIncident }: Omit<IncidentsSect
 
     const [type, setType] = useState<Incident['type']>('Falla Equipo');
     const [description, setDescription] = useState('');
-    const [opId, setOpId] = useState<string | undefined>(undefined);
+    const [opId, setOpId] = useState<string>('none');
 
     const handleSubmit = () => {
         if (!description.trim()) {
             toast({ title: "Descripción requerida", description: "La descripción de la novedad es obligatoria.", variant: "destructive" });
             return;
         }
-        onAddIncident({ type, description, op_id: opId });
+        onAddIncident({ 
+          type, 
+          description, 
+          op_id: opId === 'none' ? undefined : opId 
+        });
         setOpen(false);
         setDescription('');
-        setOpId(undefined);
+        setOpId('none');
         setType('Falla Equipo');
     };
 
-    const activeOps = orders.filter(op => op.status === 'En Proceso' || op.status === 'Crítico' || op.status === 'Pendiente');
+    const activeOps = orders.filter(op => op.status !== 'Terminada');
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
@@ -107,13 +111,15 @@ function IncidentItem({ incident, order, client, onAnalyze }: { incident: Incide
     'Otro': 'bg-gray-100 text-gray-700 border-gray-400',
   };
 
+  if (!isClient) return null;
+
   return (
     <div className={`p-3 bg-white rounded-lg shadow-sm border-l-4 ${typeClasses[incident.type]} transition-transform duration-200 hover:scale-105`}>
       <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${typeClasses[incident.type].replace('border-l-4', '')}`}>{incident.type}</span>
       <p className="text-sm text-gray-800 font-medium my-1">{incident.description}</p>
       <div className="text-xs text-gray-500 flex justify-between items-center mt-2 pt-2 border-t">
           <span>OP: <span className="font-semibold text-indigo-700">{incident.op_id || 'N/A'}</span></span>
-          <span>{isClient ? formatDateTime(incident.timestamp) : '...'}</span>
+          <span>{formatDateTime(incident.timestamp)}</span>
       </div>
       {order && (
         <div className="mt-2 text-right">
