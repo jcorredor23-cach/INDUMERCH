@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -7,7 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertOctagon, AlertTriangle, Plus, BrainCircuit, Sparkles } from "lucide-react";
+import { AlertOctagon, AlertTriangle, Plus, BrainCircuit, Sparkles, X } from "lucide-react";
 import type { Incident, ProductionOrder } from '@/lib/types';
 import { formatDateTime } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
@@ -114,7 +113,7 @@ function IncidentItem({ incident, order, client, onAnalyze }: { incident: Incide
   if (!isClient) return null;
 
   return (
-    <div className={`p-3 bg-white rounded-lg shadow-sm border-l-4 ${typeClasses[incident.type]} transition-transform duration-200 hover:scale-105`}>
+    <div className={`p-3 bg-white rounded-lg shadow-sm border-l-4 ${typeClasses[incident.type]} transition-transform duration-200 hover:scale-[1.02]`}>
       <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${typeClasses[incident.type].replace('border-l-4', '')}`}>{incident.type}</span>
       <p className="text-sm text-gray-800 font-medium my-1">{incident.description}</p>
       <div className="text-xs text-gray-500 flex justify-between items-center mt-2 pt-2 border-t">
@@ -135,14 +134,13 @@ function IncidentItem({ incident, order, client, onAnalyze }: { incident: Incide
 
 export function IncidentsSection({ incidents, orders, clients, onAddIncident }: IncidentsSectionProps) {
   const { toast } = useToast();
-  const [analysisResult, setAnalysisResult] = useState<ExceptionImpactAnalysisOutput | null>(null);
+  const [analysisResult, setAnalysisResult] = useState<{ id: string, data: ExceptionImpactAnalysisOutput } | null>(null);
   const [isLoadingAnalysis, setIsLoadingAnalysis] = useState(false);
 
   const ordersMap = new Map(orders.map(o => [o.op_id, o]));
   
   const handleAnalyze = async (incident: Incident, order: ProductionOrder) => {
     setIsLoadingAnalysis(true);
-    setAnalysisResult(null);
     try {
         const opDetails = `
             Producto: ${order.product}, 
@@ -155,7 +153,8 @@ export function IncidentsSection({ incidents, orders, clients, onAddIncident }: 
             incidentDescription: incident.description,
             opDetails: opDetails
         });
-        setAnalysisResult(result);
+        setAnalysisResult({ id: incident.id, data: result });
+        toast({ title: "Análisis Completado", description: "La IA ha procesado el impacto de la novedad." });
     } catch (e) {
         toast({ title: "Error de IA", description: "No se pudo completar el análisis.", variant: "destructive" });
         console.error("Analysis failed:", e);
@@ -165,12 +164,13 @@ export function IncidentsSection({ incidents, orders, clients, onAddIncident }: 
   };
 
   return (
-    <section className="bg-white p-6 rounded-xl shadow-2xl">
+    <section className="bg-white p-6 rounded-xl shadow-2xl flex flex-col h-full">
       <h2 className="text-xl font-bold text-slate-700 border-b pb-3 mb-4 flex justify-between items-center font-headline">
         <span className="flex items-center"><AlertTriangle className="w-5 h-5 mr-2 text-slate-500" />Registro de Novedades</span>
         <LogIncidentModal orders={orders} clients={clients} onAddIncident={onAddIncident} />
       </h2>
-      <div className="space-y-3 max-h-[400px] overflow-y-auto p-1 mb-4">
+      
+      <div className="space-y-3 flex-1 overflow-y-auto p-1 mb-4 min-h-[200px]">
         {incidents.length === 0 ? (
           <p className="text-center text-gray-500 py-6">Sin novedades registradas.</p>
         ) : (
@@ -187,26 +187,36 @@ export function IncidentsSection({ incidents, orders, clients, onAddIncident }: 
       </div>
       
       {(isLoadingAnalysis || analysisResult) && (
-        <Card className="shadow-lg rounded-xl bg-indigo-50 border-indigo-200 mt-4">
-            <CardContent className="p-4">
+        <Card className="shadow-lg rounded-xl bg-indigo-50 border-indigo-200 mt-auto animate-in fade-in slide-in-from-bottom-2 duration-300">
+            <CardContent className="p-4 relative">
+                <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="absolute top-2 right-2 h-6 w-6 text-indigo-400 hover:text-indigo-600"
+                    onClick={() => setAnalysisResult(null)}
+                >
+                    <X className="h-4 w-4" />
+                </Button>
                 <div className="flex items-center mb-3">
                     <BrainCircuit className="w-6 h-6 mr-3 text-indigo-600"/>
-                    <h3 className="text-md font-bold text-indigo-800">Análisis de Impacto IA</h3>
+                    <h3 className="text-md font-bold text-indigo-800">Resultado del Análisis IA</h3>
                 </div>
                 {isLoadingAnalysis && (
                     <div className="flex items-center justify-center p-4">
                          <Sparkles className="w-5 h-5 mr-2 text-indigo-500 animate-pulse" />
-                        <p className="text-indigo-700">Analizando...</p>
+                        <p className="text-indigo-700 text-sm font-medium">IA procesando impacto...</p>
                     </div>
                 )}
                 {analysisResult && (
-                    <Alert variant="default" className="bg-transparent border-0 p-0">
-                         <AlertTitle className="font-semibold text-indigo-700">Área de Mayor Impacto: {analysisResult.impactedArea}</AlertTitle>
-                         <AlertDescription className="text-indigo-900/80 mt-2 space-y-2 text-sm">
-                            <p><strong>Resumen:</strong> {analysisResult.impactSummary}</p>
-                            <p><strong>Sugerencia:</strong> {analysisResult.suggestedActions}</p>
-                         </AlertDescription>
-                    </Alert>
+                    <div className="space-y-2">
+                         <div className="bg-indigo-100 p-2 rounded text-xs font-bold text-indigo-800 inline-block mb-1">
+                            Área Impactada: {analysisResult.data.impactedArea}
+                         </div>
+                         <div className="text-indigo-900/90 text-sm">
+                            <p className="mb-2 leading-relaxed"><strong>Resumen de Impacto:</strong> {analysisResult.data.impactSummary}</p>
+                            <p className="leading-relaxed"><strong className="text-indigo-700">Acciones Sugeridas:</strong> {analysisResult.data.suggestedActions}</p>
+                         </div>
+                    </div>
                 )}
             </CardContent>
         </Card>

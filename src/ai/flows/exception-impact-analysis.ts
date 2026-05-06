@@ -2,10 +2,6 @@
 
 /**
  * @fileOverview Analyzes the impact of logged exceptions on production timelines, material consumption, and overall efficiency.
- *
- * - exceptionImpactAnalysis - A function that handles the analysis of exception impacts.
- * - ExceptionImpactAnalysisInput - The input type for the exceptionImpactAnalysis function.
- * - ExceptionImpactAnalysisOutput - The return type for the exceptionImpactAnalysis function.
  */
 
 import {ai} from '@/ai/genkit';
@@ -23,46 +19,39 @@ const ExceptionImpactAnalysisOutputSchema = z.object({
   impactSummary: z
     .string()
     .describe('A summary of the impact of the exception on production.'),
-  impactedArea: z.string().describe('The area most impacted by the incident.'),
+  impactedArea: z.string().describe('The area most impacted by the incident (e.g., Tiempos, Costos, Calidad).'),
   suggestedActions: z.string().describe('Suggested actions to mitigate the impact.'),
 });
 export type ExceptionImpactAnalysisOutput = z.infer<typeof ExceptionImpactAnalysisOutputSchema>;
-
-export async function exceptionImpactAnalysis(
-  input: ExceptionImpactAnalysisInput
-): Promise<ExceptionImpactAnalysisOutput> {
-  return exceptionImpactAnalysisFlow(input);
-}
 
 const prompt = ai.definePrompt({
   name: 'exceptionImpactAnalysisPrompt',
   input: {schema: ExceptionImpactAnalysisInputSchema},
   output: {schema: ExceptionImpactAnalysisOutputSchema},
-  prompt: `You are an operations analyst tasked with assessing the impact of production exceptions.
+  prompt: `Eres un analista experto en operaciones de fundición y metalmecánica.
+  Analiza el siguiente incidente y los detalles de la orden de producción asociada para determinar el impacto en la eficiencia, materiales y tiempos.
 
-  Analyze the following incident description and production order details to determine the impact on production timelines, material consumption, and overall efficiency.
+  Incidente: {{{incidentDescription}}}
+  Detalles de la Orden: {{{opDetails}}}
 
-  Incident Description: {{{incidentDescription}}}
-  Production Order Details: {{{opDetails}}}
-
-  Based on the analysis, provide a summary of the impact, identify the area most impacted, and suggest actions to mitigate the impact.
-
-  Ensure that the suggested actions are practical and address the root cause of the issue.
-
-  Format your response as follows:
-  Impact Summary: [Summary of the impact]
-  Impacted Area: [The area most impacted]
-  Suggested Actions: [Suggested actions to mitigate the impact]`,
+  Proporciona un análisis crítico y sugiere pasos concretos para mitigar el retraso o el desperdicio.`,
 });
 
-const exceptionImpactAnalysisFlow = ai.defineFlow(
+export async function exceptionImpactAnalysis(
+  input: ExceptionImpactAnalysisInput
+): Promise<ExceptionImpactAnalysisOutput> {
+  const {output} = await prompt(input);
+  if (!output) throw new Error('No se pudo generar el análisis de impacto.');
+  return output;
+}
+
+export const exceptionImpactAnalysisFlow = ai.defineFlow(
   {
     name: 'exceptionImpactAnalysisFlow',
     inputSchema: ExceptionImpactAnalysisInputSchema,
     outputSchema: ExceptionImpactAnalysisOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
-    return output!;
+    return exceptionImpactAnalysis(input);
   }
 );
