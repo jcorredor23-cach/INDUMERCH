@@ -1,23 +1,23 @@
 # SteelFlow - InduControl (Industria 4.0)
 ### Sistema de Soporte a la Decisión (DSS) basado en IA Generativa para Plantas de Fundición
 
-Este proyecto fue desarrollado como una solución de vanguardia para la optimización de procesos en entornos de metalmecánica y fundición, integrando conceptos de **Ingeniería Industrial** con **Inteligencia Artificial de última generación**.
+Este proyecto representa una solución de vanguardia para la optimización de procesos en entornos de metalmecánica y fundición, integrando conceptos de **Ingeniería Industrial** con **Inteligencia Artificial de última generación**.
 
 ---
 
 ## 🎓 Ponencia: Seminario de Ingeniería - Universidad Distrital
 
-Este software representa la convergencia entre el control estadístico de procesos tradicional y el paradigma de la **Industria 4.0**.
+Este software demuestra la convergencia entre el control estadístico de procesos tradicional y el paradigma de la **Industria 4.0**.
 
 ### 🧠 Innovaciones Principales
-- **Análisis Predictivo de Stock:** Algoritmos que razonan sobre la carga de trabajo semanal para predecir faltantes antes de que ocurran.
-- **Diagnóstico IA de Incidentes:** Análisis de impacto no-determinístico para evaluar retrasos en coladas y sugerir acciones correctivas inmediatas.
-- **Control Estadístico Moderno:** Implementación digital de Diagramas de Pareto para la identificación de los "pocos vitales" en las fallas de planta.
+- **Análisis Predictivo de Stock:** Algoritmos que razonan sobre la carga de trabajo semanal para predecir faltantes mediante IA Generativa.
+- **Diagnóstico IA de Incidentes:** Análisis de impacto no-determinístico para evaluar retrasos en coladas y sugerir acciones correctivas.
+- **Control Estadístico Moderno:** Implementación de Diagramas de Pareto para la identificación de causas raíz en fallas de planta.
 - **Gestión de Recursos JIT:** Asignación dinámica de operarios y maquinaria basada en disponibilidad en tiempo real.
 
 ### 🛠️ Stack Tecnológico
-- **Frontend:** Next.js 15 (App Router) + TypeScript (Tipado estricto para procesos críticos).
-- **Estilos:** Tailwind CSS + Shadcn/UI (Diseño industrial moderno y responsivo).
+- **Frontend:** Next.js 15 (App Router) + TypeScript.
+- **Estilos:** Tailwind CSS + Shadcn/UI (Diseño industrial profesional).
 - **Orquestación de IA:** Google Genkit.
 - **Modelo de Lenguaje:** Google Gemini Pro 1.5.
 - **Visualización:** Recharts (Análisis cuantitativo).
@@ -28,23 +28,26 @@ Este software representa la convergencia entre el control estadístico de proces
 
 Para presentar el código en tu ponencia, sigue estos pasos en tu terminal:
 
-1. **Crear el repositorio en GitHub:** Ve a GitHub y crea un nuevo repositorio vacío (ej. `steelflow-inducontrol`).
-2. **Inicializar y subir el código:**
+1. **Crear el repositorio en GitHub:** Ve a tu cuenta de GitHub y crea un nuevo repositorio vacío llamado `steelflow-inducontrol`. **No** lo inicialices con README ni licencia.
+
+2. **Ejecutar comandos en la terminal:**
    ```bash
-   # Inicializar git
+   # 1. Inicializar el repositorio local
    git init
 
-   # Añadir los archivos
+   # 2. Añadir todos los archivos al área de preparación
    git add .
 
-   # Realizar el primer commit
-   git commit -m "Initial commit: SteelFlow InduControl MVP para Universidad Distrital"
+   # 3. Realizar el primer commit profesional
+   git commit -m "Initial commit: SteelFlow InduControl MVP para Seminario Universidad Distrital"
 
-   # Vincular con tu repositorio (reemplaza con tu URL)
-   git remote add origin https://github.com/TU_USUARIO/TU_REPO.git
+   # 4. Vincular con tu repositorio remoto (REEMPLAZA LA URL CON LA TUYA)
+   git remote add origin https://github.com/TU_USUARIO/steelflow-inducontrol.git
 
-   # Renombrar rama a main y subir
+   # 5. Asegurar que la rama principal se llame main
    git branch -M main
+
+   # 6. Subir el código
    git push -u origin main
    ```
 
