@@ -24,30 +24,27 @@ Este software demuestra la convergencia entre el control estadístico de proceso
 
 ---
 
+## 🤖 Desarrollo Agéntico (Claude Code)
+Este proyecto está optimizado para flujos de trabajo con **IA Agéntica**. Para continuar el desarrollo con Claude Code:
+
+1. **Instalar el CLI:** `npm install -g @anthropic-ai/claude-code`
+2. **Autenticar:** `claude auth`
+3. **Ejecutar en el proyecto:** Corre `claude` en la raíz del proyecto para realizar refactorizaciones, tests o nuevas funcionalidades mediante lenguaje natural.
+
+---
+
 ## 🚀 Cómo subir este proyecto a tu GitHub
 
 Para presentar el código en tu ponencia, sigue estos pasos en tu terminal:
 
-1. **Crear el repositorio en GitHub:** Ve a tu cuenta de GitHub y crea un nuevo repositorio vacío llamado `steelflow-inducontrol`. **No** lo inicialices con README ni licencia.
-
+1. **Crear el repositorio en GitHub:** Crea un repositorio vacío llamado `steelflow-inducontrol`.
 2. **Ejecutar comandos en la terminal:**
    ```bash
-   # 1. Inicializar el repositorio local
    git init
-
-   # 2. Añadir todos los archivos al área de preparación
    git add .
-
-   # 3. Realizar el primer commit profesional
    git commit -m "Initial commit: SteelFlow InduControl MVP para Seminario Universidad Distrital"
-
-   # 4. Vincular con tu repositorio remoto (REEMPLAZA LA URL CON LA TUYA)
    git remote add origin https://github.com/TU_USUARIO/steelflow-inducontrol.git
-
-   # 5. Asegurar que la rama principal se llame main
    git branch -M main
-
-   # 6. Subir el código
    git push -u origin main
    ```
 
