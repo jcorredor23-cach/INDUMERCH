@@ -17,11 +17,13 @@ SteelFlow es una plataforma integral para la optimización de procesos en entorn
 - **Modelo de Lenguaje:** Google Gemini Pro 1.5.
 - **Visualización:** Recharts.
 
-## 🤖 Desarrollo Agéntico
-Este proyecto está diseñado para flujos de trabajo con **IA Agéntica**. Compatible con herramientas como Claude Code para refactorizaciones y mantenimiento evolutivo.
+## 🤖 Desarrollo Agéntico (Claude Code)
+Este proyecto está diseñado para flujos de trabajo con **IA Agéntica**. 
+1. Extraer el código mediante descarga o Git.
+2. Instalar dependencias: `npm install`.
+3. Iniciar Claude Code: `npm install -g @anthropic-ai/claude-code` y luego ejecutar `claude`.
 
 ## 💻 Configuración Local
-
 1. Instalar dependencias: `npm install`
 2. Configurar variables de entorno en `.env` (API Keys de Gemini y Firebase).
 3. Iniciar servidor de desarrollo: `npm run dev`
